@@ -7,7 +7,7 @@ namespace WAD._8392.DAL.Models
 {
     public class ProductCategory
     {
-        public int CategoryId { get; set; }
+        public int ProductCategoryId { get; set; }
         [Required]
         [MinLength(3)]
         public string CategoryName { get; set; }

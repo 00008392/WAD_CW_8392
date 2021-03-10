@@ -18,8 +18,8 @@ namespace WAD._8392.DAL.Models
         public string Location { get; set; }
         public DateTime DatePublished { get; set; } = DateTime.Now;
         public int? ManufacturerId { get; set; }
-        public int? SubcategoryId { get; set; }
-        public int? OwnerId { get; set; }
+        public int? ProductSubcategoryId { get; set; }
+        public int? UserId { get; set; }
         public virtual Manufacturer Manufacturer { get; set; }
         public virtual ProductSubcategory ProductSubcategory { get; set; }
         public virtual User Owner { get; set; }
