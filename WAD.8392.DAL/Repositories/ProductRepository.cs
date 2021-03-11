@@ -9,12 +9,10 @@ using WAD._8392.DAL.DBO;
 
 namespace WAD._8392.DAL.Repositories
 {
-    public class ProductRepository : IRepository<Product>
+    public class ProductRepository : BaseRepository, IRepository<Product>
     {
-        private readonly MusicInstrumentsDbContext _context;
-        public ProductRepository(MusicInstrumentsDbContext context)
+        public ProductRepository(MusicInstrumentsDbContext context):base(context)
         {
-            _context = context;
         }
 
         public async Task AddAsync(Product value)

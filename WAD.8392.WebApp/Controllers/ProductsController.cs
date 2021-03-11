@@ -13,27 +13,25 @@ namespace WAD._8392.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : GenericController<Product>
     {
-        private readonly IRepository<Product> _productRepository;
 
-        public ProductsController(IRepository<Product> productRepository)
+        public ProductsController(IRepository<Product> repository):base(repository)
         {
-            _productRepository = productRepository;
         }
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _productRepository.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _productRepository.GetByIdAsync(id);
+            var product = await _repository.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -60,7 +58,7 @@ namespace WAD._8392.WebApp.Controllers
 
             try
             {
-                await _productRepository.UpdateAsync(product);
+                await _repository.UpdateAsync(product);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -88,7 +86,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest();
             }
-            await _productRepository.AddAsync(product);
+            await _repository.AddAsync(product);
 
             return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
         }
@@ -97,20 +95,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _productRepository.GetByIdAsync(id);
+            var product = await _repository.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            await _productRepository.DeleteAsync(product);
+            await _repository.DeleteAsync(product);
 
             return NoContent();
         }
 
         private bool ProductExists(int id)
         {
-            return _productRepository.IfExists(id);
+            return _repository.IfExists(id);
         }
         
     }

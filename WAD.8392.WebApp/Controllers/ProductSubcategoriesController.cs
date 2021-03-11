@@ -13,27 +13,25 @@ namespace WAD._8392.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductSubcategoriesController : ControllerBase
+    public class ProductSubcategoriesController : GenericController<ProductSubcategory>
     {
-        private readonly IRepository<ProductSubcategory> _productSubcategoryRepository;
 
-        public ProductSubcategoriesController(IRepository<ProductSubcategory> productSubcategoryRepository)
+        public ProductSubcategoriesController(IRepository<ProductSubcategory> repository):base(repository)
         {
-            _productSubcategoryRepository = productSubcategoryRepository;
         }
 
         // GET: api/ProductSubcategories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories()
         {
-            return await _productSubcategoryRepository.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
         // GET: api/ProductSubcategories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductSubcategory>> GetProductSubcategory(int id)
         {
-            var productSubcategory = await _productSubcategoryRepository.GetByIdAsync(id);
+            var productSubcategory = await _repository.GetByIdAsync(id);
 
             if (productSubcategory == null)
             {
@@ -60,7 +58,7 @@ namespace WAD._8392.WebApp.Controllers
 
             try
             {
-                await _productSubcategoryRepository.UpdateAsync(productSubcategory);
+                await _repository.UpdateAsync(productSubcategory);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -86,7 +84,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await _productSubcategoryRepository.AddAsync(productSubcategory);
+            await _repository.AddAsync(productSubcategory);
 
             return CreatedAtAction("GetProductSubcategory", new { id = productSubcategory.ProductSubcategoryId }, productSubcategory);
         }
@@ -95,20 +93,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductSubcategory(int id)
         {
-            var productSubcategory = await _productSubcategoryRepository.GetByIdAsync(id);
+            var productSubcategory = await _repository.GetByIdAsync(id);
             if (productSubcategory == null)
             {
                 return NotFound();
             }
 
-           await _productSubcategoryRepository.DeleteAsync(productSubcategory);
+           await _repository.DeleteAsync(productSubcategory);
 
             return NoContent();
         }
 
         private bool ProductSubcategoryExists(int id)
         {
-            return _productSubcategoryRepository.IfExists(id);
+            return _repository.IfExists(id);
         }
     }
 }

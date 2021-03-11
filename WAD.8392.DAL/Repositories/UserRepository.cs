@@ -9,12 +9,12 @@ using WAD._8392.DAL.DBO;
 
 namespace WAD._8392.DAL.Repositories
 {
-    public class UserRepository : IRepository<User>
+    public class UserRepository : BaseRepository, IRepository<User>
     {
-        private readonly MusicInstrumentsDbContext _context;
-        public UserRepository(MusicInstrumentsDbContext context)
+
+        public UserRepository(MusicInstrumentsDbContext context):base(context)
         {
-            _context = context;
+
         }
 
         public async Task AddAsync(User value)
@@ -49,5 +49,6 @@ namespace WAD._8392.DAL.Repositories
             _context.Entry(value).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
     }
 }

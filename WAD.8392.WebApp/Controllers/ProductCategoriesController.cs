@@ -13,27 +13,25 @@ namespace WAD._8392.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductCategoriesController : ControllerBase
+    public class ProductCategoriesController : GenericController<ProductCategory>
     {
-        private readonly IRepository<ProductCategory> _productCategoryRepository;
 
-        public ProductCategoriesController(IRepository<ProductCategory> productCategoryRepository)
+        public ProductCategoriesController(IRepository<ProductCategory> repository):base(repository)
         {
-            _productCategoryRepository = productCategoryRepository;
         }
 
         // GET: api/ProductCategories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
         {
-            return await _productCategoryRepository.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
         // GET: api/ProductCategories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
-            var productCategory = await _productCategoryRepository.GetByIdAsync(id);
+            var productCategory = await _repository.GetByIdAsync(id);
 
             if (productCategory == null)
             {
@@ -60,7 +58,7 @@ namespace WAD._8392.WebApp.Controllers
 
             try
             {
-                await _productCategoryRepository.UpdateAsync(productCategory);
+                await _repository.UpdateAsync(productCategory);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -86,7 +84,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await _productCategoryRepository.AddAsync(productCategory);
+            await _repository.AddAsync(productCategory);
 
             return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
         }
@@ -95,20 +93,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {
-            var productCategory = await _productCategoryRepository.GetByIdAsync(id);
+            var productCategory = await _repository.GetByIdAsync(id);
             if (productCategory == null)
             {
                 return NotFound();
             }
 
-            await _productCategoryRepository.DeleteAsync(productCategory);
+            await _repository.DeleteAsync(productCategory);
 
             return NoContent();
         }
 
         private bool ProductCategoryExists(int id)
         {
-            return _productCategoryRepository.IfExists(id);
+            return _repository.IfExists(id);
         }
     }
 }

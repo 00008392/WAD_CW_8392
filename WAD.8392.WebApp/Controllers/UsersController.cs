@@ -13,27 +13,25 @@ namespace WAD._8392.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : GenericController<User>
     {
-        private readonly IRepository<User> _userRepository;
 
-        public UsersController(IRepository<User> userRepository)
+        public UsersController(IRepository<User> repository):base(repository)
         {
-            _userRepository = userRepository;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _userRepository.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _repository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -60,7 +58,7 @@ namespace WAD._8392.WebApp.Controllers
 
             try
             {
-                await _userRepository.UpdateAsync(user);
+                await _repository.UpdateAsync(user);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -86,7 +84,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await _userRepository.AddAsync(user);
+            await _repository.AddAsync(user);
 
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
@@ -95,20 +93,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _repository.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            await _userRepository.DeleteAsync(user);
+            await _repository.DeleteAsync(user);
 
             return NoContent();
         }
 
         private bool UserExists(int id)
         {
-            return _userRepository.IfExists(id);
+            return _repository.IfExists(id);
         }
     }
 }

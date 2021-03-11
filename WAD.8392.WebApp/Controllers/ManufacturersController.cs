@@ -13,27 +13,26 @@ namespace WAD._8392.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ManufacturersController : ControllerBase
+    public class ManufacturersController : GenericController<Manufacturer>
     {
-        private readonly IRepository<Manufacturer> _manufacturerRepository;
 
-        public ManufacturersController(IRepository<Manufacturer> manufacturerRepository)
+        public ManufacturersController(IRepository<Manufacturer> repository):base(repository)
         {
-            _manufacturerRepository = manufacturerRepository;
         }
 
         // GET: api/Manufacturers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Manufacturer>>> GetManufacturers()
         {
-            return await _manufacturerRepository.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
         // GET: api/Manufacturers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Manufacturer>> GetManufacturer(int id)
         {
-            var manufacturer = await _manufacturerRepository.GetByIdAsync(id);
+            var manufacturer = await _repository.GetByIdAsync(id);
+
 
             if (manufacturer == null)
             {
@@ -60,7 +59,7 @@ namespace WAD._8392.WebApp.Controllers
 
             try
             {
-                await _manufacturerRepository.UpdateAsync(manufacturer);
+                await _repository.UpdateAsync(manufacturer);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -86,7 +85,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await _manufacturerRepository.AddAsync(manufacturer);
+            await _repository.AddAsync(manufacturer);
 
             return CreatedAtAction("GetManufacturer", new { id = manufacturer.ManufacturerId }, manufacturer);
         }
@@ -95,20 +94,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteManufacturer(int id)
         {
-            var manufacturer = await _manufacturerRepository.GetByIdAsync(id);
+            var manufacturer = await _repository.GetByIdAsync(id);
             if (manufacturer == null)
             {
                 return NotFound();
             }
 
-            await _manufacturerRepository.DeleteAsync(manufacturer);
+            await _repository.DeleteAsync(manufacturer);
 
             return NoContent();
         }
 
         private bool ManufacturerExists(int id)
         {
-            return _manufacturerRepository.IfExists(id);
+            return _repository.IfExists(id);
         }
     }
 }
