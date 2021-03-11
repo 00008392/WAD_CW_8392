@@ -16,10 +16,10 @@ namespace WAD._8392.DAL.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.Manufacturer", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.Manufacturer", b =>
                 {
                     b.Property<int>("ManufacturerId")
                         .ValueGeneratedOnAdd()
@@ -35,7 +35,7 @@ namespace WAD._8392.DAL.Migrations
                     b.ToTable("Manufacturers");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.Product", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -84,7 +84,7 @@ namespace WAD._8392.DAL.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.ProductCategory", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.ProductCategory", b =>
                 {
                     b.Property<int>("ProductCategoryId")
                         .ValueGeneratedOnAdd()
@@ -100,7 +100,7 @@ namespace WAD._8392.DAL.Migrations
                     b.ToTable("ProductCategories");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.ProductSubcategory", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.ProductSubcategory", b =>
                 {
                     b.Property<int>("ProductSubcategoryId")
                         .ValueGeneratedOnAdd()
@@ -121,7 +121,7 @@ namespace WAD._8392.DAL.Migrations
                     b.ToTable("ProductSubcategories");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.User", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -159,17 +159,17 @@ namespace WAD._8392.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.Product", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.Product", b =>
                 {
-                    b.HasOne("WAD._8392.DAL.Models.Manufacturer", "Manufacturer")
+                    b.HasOne("WAD._8392.DAL.DBO.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId");
 
-                    b.HasOne("WAD._8392.DAL.Models.ProductSubcategory", "ProductSubcategory")
+                    b.HasOne("WAD._8392.DAL.DBO.ProductSubcategory", "ProductSubcategory")
                         .WithMany("Products")
                         .HasForeignKey("ProductSubcategoryId");
 
-                    b.HasOne("WAD._8392.DAL.Models.User", "Owner")
+                    b.HasOne("WAD._8392.DAL.DBO.User", "Owner")
                         .WithMany("Products")
                         .HasForeignKey("UserId");
 
@@ -180,31 +180,31 @@ namespace WAD._8392.DAL.Migrations
                     b.Navigation("ProductSubcategory");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.ProductSubcategory", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.ProductSubcategory", b =>
                 {
-                    b.HasOne("WAD._8392.DAL.Models.ProductCategory", "ProductCategory")
+                    b.HasOne("WAD._8392.DAL.DBO.ProductCategory", "ProductCategory")
                         .WithMany("ProductSubcategories")
                         .HasForeignKey("ProductCategoryId");
 
                     b.Navigation("ProductCategory");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.Manufacturer", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.Manufacturer", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.ProductCategory", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.ProductCategory", b =>
                 {
                     b.Navigation("ProductSubcategories");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.ProductSubcategory", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.ProductSubcategory", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("WAD._8392.DAL.Models.User", b =>
+            modelBuilder.Entity("WAD._8392.DAL.DBO.User", b =>
                 {
                     b.Navigation("Products");
                 });

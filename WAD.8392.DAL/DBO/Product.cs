@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace WAD._8392.DAL.Models
+namespace WAD._8392.DAL.DBO
 {
     public class Product
     {
@@ -14,9 +15,9 @@ namespace WAD._8392.DAL.Models
         public string ProductDescription { get; set; }
         public Condition Condition { get; set; }
         public decimal Price { get; set; }
-        public Status Status { get; set; } = Status.Available;
+        public Status Status { get; set; } 
         public string Location { get; set; }
-        public DateTime DatePublished { get; set; } = DateTime.Now;
+        public DateTime DatePublished { get; set; } 
         public int? ManufacturerId { get; set; }
         public int? ProductSubcategoryId { get; set; }
         public int? UserId { get; set; }
@@ -37,5 +38,4 @@ namespace WAD._8392.DAL.Models
         Booked,
         Sold
     }
-
 }

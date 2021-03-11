@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace WAD._8392.DAL.Models
+namespace WAD._8392.DAL.DBO
 {
     public class Manufacturer
     {

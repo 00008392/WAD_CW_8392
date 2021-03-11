@@ -27,7 +27,7 @@ namespace WAD._8392.WebApp
         {
             services.AddControllersWithViews();
             services.AddDbContext<MusicInstrumentsDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("MusicInstrumentsDbContext")));
+          options.UseSqlServer(Configuration.GetConnectionString("MusicInstrumentsDbContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using WAD._8392.DAL.Models;
+using System.Linq;
+using System.Threading.Tasks;
+using WAD._8392.DAL.DBO;
 
 namespace WAD._8392.DAL.Context
 {

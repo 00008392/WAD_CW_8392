@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace WAD._8392.DAL.Validation
+namespace WAD._8392.DAl.Validation
 {
-    public class DateOfBirthValidation: ValidationAttribute
+    public class DateOfBirthValidation : ValidationAttribute
     {
         private int _ageLimit;
         public DateOfBirthValidation(int limit)
@@ -15,7 +16,7 @@ namespace WAD._8392.DAL.Validation
         public override bool IsValid(object value)
         {
             DateTime dateTime = Convert.ToDateTime(value);
-            if(dateTime.AddYears(_ageLimit)>DateTime.Now)
+            if (dateTime.AddYears(_ageLimit) > DateTime.Now)
             {
                 return false;
             }

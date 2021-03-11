@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using WAD._8392.DAL.Validation;
+using System.Linq;
+using System.Threading.Tasks;
+using WAD._8392.DAl.Validation;
 
-namespace WAD._8392.DAL.Models
+namespace WAD._8392.DAL.DBO
 {
     public class User
     {
@@ -14,9 +15,9 @@ namespace WAD._8392.DAL.Models
         public string FirstName { get; set; }
         [MinLength(3)]
         public string LastName { get; set; }
-        [DateOfBirthValidation(18, ErrorMessage ="Should be at least 18 y.o.")]
+        [DateOfBirthValidation(18, ErrorMessage = "Should be at least 18 y.o.")]
         public DateTime DateOfBirth { get; set; }
-       
+
         [Required]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
@@ -27,7 +28,7 @@ namespace WAD._8392.DAL.Models
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [MinLength(8, ErrorMessage ="Password should be minimum 8 characters long")]
+        [MinLength(8, ErrorMessage = "Password should be minimum 8 characters long")]
         public string Password { get; set; }
         public virtual ICollection<Product> Products { get; set; }
     }
