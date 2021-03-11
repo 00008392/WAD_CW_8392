@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
+using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
@@ -14,25 +15,25 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly MusicInstrumentsDbContext _context;
+        private readonly IRepository<User> _userRepository;
 
-        public UsersController(MusicInstrumentsDbContext context)
+        public UsersController(IRepository<User> userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _userRepository.GetAllAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -55,11 +56,11 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.Entry(user).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _userRepository.UpdateAsync(user);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -85,8 +86,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.AddAsync(user);
 
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
@@ -95,21 +95,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.DeleteAsync(user);
 
             return NoContent();
         }
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _userRepository.IfExists(id);
         }
     }
 }

@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WAD._8392.DAL.Context;
+using WAD._8392.DAL.DBO;
+using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp
 {
@@ -26,6 +28,11 @@ namespace WAD._8392.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddScoped<IRepository<User>, UserRepository>();
+            services.AddScoped<IRepository<Product>, ProductRepository>();
+            services.AddScoped<IRepository<Manufacturer>, ManufacturerRepository>();
+            services.AddScoped<IRepository<ProductCategory>, ProductCategoryRepository>();
+            services.AddScoped<IRepository<ProductSubcategory>, ProductSubcategoryRepository>();
             services.AddDbContext<MusicInstrumentsDbContext>(options =>
           options.UseSqlServer(Configuration.GetConnectionString("MusicInstrumentsDbContext")));
         }

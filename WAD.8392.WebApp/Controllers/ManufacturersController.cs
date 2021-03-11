@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
+using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
@@ -14,25 +15,25 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ManufacturersController : ControllerBase
     {
-        private readonly MusicInstrumentsDbContext _context;
+        private readonly IRepository<Manufacturer> _manufacturerRepository;
 
-        public ManufacturersController(MusicInstrumentsDbContext context)
+        public ManufacturersController(IRepository<Manufacturer> manufacturerRepository)
         {
-            _context = context;
+            _manufacturerRepository = manufacturerRepository;
         }
 
         // GET: api/Manufacturers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Manufacturer>>> GetManufacturers()
         {
-            return await _context.Manufacturers.ToListAsync();
+            return await _manufacturerRepository.GetAllAsync();
         }
 
         // GET: api/Manufacturers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Manufacturer>> GetManufacturer(int id)
         {
-            var manufacturer = await _context.Manufacturers.FindAsync(id);
+            var manufacturer = await _manufacturerRepository.GetByIdAsync(id);
 
             if (manufacturer == null)
             {
@@ -55,11 +56,11 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.Entry(manufacturer).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _manufacturerRepository.UpdateAsync(manufacturer);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -85,8 +86,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.Manufacturers.Add(manufacturer);
-            await _context.SaveChangesAsync();
+            await _manufacturerRepository.AddAsync(manufacturer);
 
             return CreatedAtAction("GetManufacturer", new { id = manufacturer.ManufacturerId }, manufacturer);
         }
@@ -95,21 +95,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteManufacturer(int id)
         {
-            var manufacturer = await _context.Manufacturers.FindAsync(id);
+            var manufacturer = await _manufacturerRepository.GetByIdAsync(id);
             if (manufacturer == null)
             {
                 return NotFound();
             }
 
-            _context.Manufacturers.Remove(manufacturer);
-            await _context.SaveChangesAsync();
+            await _manufacturerRepository.DeleteAsync(manufacturer);
 
             return NoContent();
         }
 
         private bool ManufacturerExists(int id)
         {
-            return _context.Manufacturers.Any(e => e.ManufacturerId == id);
+            return _manufacturerRepository.IfExists(id);
         }
     }
 }

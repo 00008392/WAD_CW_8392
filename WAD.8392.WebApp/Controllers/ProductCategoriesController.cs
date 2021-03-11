@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
+using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
@@ -14,25 +15,25 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ProductCategoriesController : ControllerBase
     {
-        private readonly MusicInstrumentsDbContext _context;
+        private readonly IRepository<ProductCategory> _productCategoryRepository;
 
-        public ProductCategoriesController(MusicInstrumentsDbContext context)
+        public ProductCategoriesController(IRepository<ProductCategory> productCategoryRepository)
         {
-            _context = context;
+            _productCategoryRepository = productCategoryRepository;
         }
 
         // GET: api/ProductCategories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
         {
-            return await _context.ProductCategories.ToListAsync();
+            return await _productCategoryRepository.GetAllAsync();
         }
 
         // GET: api/ProductCategories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
-            var productCategory = await _context.ProductCategories.FindAsync(id);
+            var productCategory = await _productCategoryRepository.GetByIdAsync(id);
 
             if (productCategory == null)
             {
@@ -55,11 +56,11 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.Entry(productCategory).State = EntityState.Modified;
+          
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _productCategoryRepository.UpdateAsync(productCategory);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -85,8 +86,7 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.ProductCategories.Add(productCategory);
-            await _context.SaveChangesAsync();
+            await _productCategoryRepository.AddAsync(productCategory);
 
             return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
         }
@@ -95,21 +95,20 @@ namespace WAD._8392.WebApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {
-            var productCategory = await _context.ProductCategories.FindAsync(id);
+            var productCategory = await _productCategoryRepository.GetByIdAsync(id);
             if (productCategory == null)
             {
                 return NotFound();
             }
 
-            _context.ProductCategories.Remove(productCategory);
-            await _context.SaveChangesAsync();
+            await _productCategoryRepository.DeleteAsync(productCategory);
 
             return NoContent();
         }
 
         private bool ProductCategoryExists(int id)
         {
-            return _context.ProductCategories.Any(e => e.ProductCategoryId == id);
+            return _productCategoryRepository.IfExists(id);
         }
     }
 }
