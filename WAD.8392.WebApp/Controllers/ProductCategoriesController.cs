@@ -62,7 +62,7 @@ namespace WAD._8392.WebApp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductCategoryExists(id))
+                if (!_repository.IfExists(id))
                 {
                     return NotFound();
                 }
@@ -104,9 +104,6 @@ namespace WAD._8392.WebApp.Controllers
             return NoContent();
         }
 
-        private bool ProductCategoryExists(int id)
-        {
-            return _repository.IfExists(id);
-        }
+     
     }
 }
