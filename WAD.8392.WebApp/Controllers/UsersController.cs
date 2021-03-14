@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
@@ -80,6 +81,13 @@ namespace WAD._8392.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            List<User> users = await _repository.GetAllAsync();
+            User person = users.Select(person => person).FirstOrDefault(person => person.UserName == user.UserName);
+            if(person!=null)
+            {
+                ModelState.AddModelError(user.UserName, "The person with the given username already exists");
+            }
+            
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

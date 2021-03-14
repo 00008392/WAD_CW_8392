@@ -1,0 +1,31 @@
+﻿<p>
+    {{message}}
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Description</td>
+            <td>Condition</td>
+            <td>Price</td>
+            <td>Manufacturer</td>
+            <td>Subcategory</td>
+            <td>Location</td>
+            <td>User</td>
+            <td>Date published</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="product in products">
+            <td>{{product.productName}}</td>
+            <td>{{product.productDescription}}</td>
+            <td>{{product.condition}}</td>
+            <td>{{product.price}}</td>
+            <td>{{product.manufacturer.manufacturerName}}</td>
+            <td>{{product.productSubcategory.subcategoryName}}</td>
+            <td>{{product.location}}</td>
+            <td>{{product.owner.userName}}</td>
+            <td>{{product.datePublished}}</td>
+        </tr>
+    </tbody>
+</table>

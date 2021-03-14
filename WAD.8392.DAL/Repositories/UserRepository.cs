@@ -19,6 +19,7 @@ namespace WAD._8392.DAL.Repositories
 
         public async Task AddAsync(User value)
         {
+            
             _context.Users.Add(value);
             await _context.SaveChangesAsync();
         }
