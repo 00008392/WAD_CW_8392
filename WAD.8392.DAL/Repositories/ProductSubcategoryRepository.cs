@@ -28,12 +28,12 @@ namespace WAD._8392.DAL.Repositories
 
         public async Task<List<ProductSubcategory>> GetAllAsync()
         {
-            return await _context.ProductSubcategories.ToListAsync();
+            return await _context.ProductSubcategories.Include("ProductCategory").ToListAsync();
         }
 
         public async Task<ProductSubcategory> GetByIdAsync(int id)
         {
-            return await _context.ProductSubcategories.FindAsync(id);
+            return await _context.ProductSubcategories.Include("ProductCategory").FirstOrDefaultAsync(p=>p.ProductSubcategoryId==id);
 
         }
 

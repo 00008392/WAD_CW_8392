@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
@@ -35,6 +36,7 @@ namespace WAD._8392.WebApp
             services.AddScoped<IRepository<ProductSubcategory>, ProductSubcategoryRepository>();
             services.AddDbContext<MusicInstrumentsDbContext>(options =>
           options.UseSqlServer(Configuration.GetConnectionString("MusicInstrumentsDbContext")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,8 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System.Text.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
+
+
 
 namespace WAD._8392.DAL.DBO
 {
@@ -13,8 +18,10 @@ namespace WAD._8392.DAL.DBO
         [MinLength(3)]
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Condition Condition { get; set; }
         public decimal Price { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Status Status { get; set; } 
         public string Location { get; set; }
         public DateTime DatePublished { get; set; } 
@@ -28,14 +35,20 @@ namespace WAD._8392.DAL.DBO
 
     public enum Condition
     {
+        [EnumMember(Value = "New")]
         New,
+        [EnumMember(Value = "Medium")]
         Medium,
+        [EnumMember(Value = "Old")]
         Old
     }
     public enum Status
     {
+        [EnumMember(Value = "Available")]
         Available,
+        [EnumMember(Value = "Booked")]
         Booked,
+        [EnumMember(Value = "Sold")]
         Sold
     }
 }

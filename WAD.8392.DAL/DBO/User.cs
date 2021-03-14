@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WAD._8392.DAl.Validation;
 
@@ -27,9 +28,11 @@ namespace WAD._8392.DAL.DBO
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        [DataType(DataType.Password)]
         [Required]
         [MinLength(8, ErrorMessage = "Password should be minimum 8 characters long")]
         public string Password { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Product> Products { get; set; }
     }
 }
