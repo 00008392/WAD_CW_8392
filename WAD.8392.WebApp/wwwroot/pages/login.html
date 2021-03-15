@@ -1,15 +1,16 @@
 ﻿<div class="container">
     <div class="row justify-content-center">
         <div class="col-5">
+            <p>{{message}}</p>
             <label>
                 Username
-                <input type="text" ng-model="user.userName" />
+                <input type="text" ng-model="login.userName" />
             </label>
             <label>
                 Password
-                <input type="password" ng-model="user.password" />
+                <input type="password" ng-model="login.password" />
             </label>
-            <input type="button" ng-click="Login()" />
+            <input type="button" ng-click="SignIn()" />
         </div>
     </div>
 </div>

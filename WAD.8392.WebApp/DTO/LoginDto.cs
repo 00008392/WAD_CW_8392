@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WAD._8392.DAL.Models
+namespace WAD._8392.WebApp.DTO
 {
-    public class LoginModel
+    public class LoginDto
     {
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string Password { get; set; }
     }
 }

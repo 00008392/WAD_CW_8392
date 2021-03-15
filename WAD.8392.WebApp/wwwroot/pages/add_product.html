@@ -1,0 +1,31 @@
+﻿<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-5">
+            <label>
+                Product name
+                <input type="text" ng-model="product.productName" />
+            </label>
+            <label>
+                Product description
+                <input type="text" ng-model="product.productDescription" />
+            </label>
+            <label>
+                Price
+                <input type="number" ng-model="product.Price" />
+            </label>
+            <label>
+                Location
+                <input type="tel" ng-model="product.Location" />
+            </label>
+            <label>
+                Manufacturer
+                <select ng-options="manufacturer as manufacturer.manufacturerName for manufacturer in manufacturers track by manufacturer.manufacturerId" ng-model="selected"></select>
+            </label>
+            <label>
+                Subcategory
+                <select ng-options="productSubcategory as productSubcategory.subcategoryName for productSubcategory in productSubcategories track by productSubcategory.productSubcategoryId" ng-model="selected"></select>
+            </label>
+            <input type="button" ng-disabled="PermitAddingProduct" ng-click="Register()" value="Add product" />
+        </div>
+    </div>
+</div>

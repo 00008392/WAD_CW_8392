@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
 using WAD._8392.DAL.Repositories;
+using WAD._8392.WebApp.Mappings;
 
 namespace WAD._8392.WebApp.Controllers
 {
@@ -15,19 +17,23 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ProductsController : GenericController<Product>
     {
+        private readonly UsernameMapper _mapper;
 
-        public ProductsController(IRepository<Product> repository):base(repository)
+        public ProductsController(IRepository<Product> repository, UsernameMapper mapper):base(repository)
         {
+            _mapper = mapper;
         }
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
+            
             return await _repository.GetAllAsync();
         }
 
         // GET: api/Products/5
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
@@ -77,12 +83,15 @@ namespace WAD._8392.WebApp.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product, User user)
+        public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            product.UserId = user.UserId;
+            var owner = await _mapper.MapUsernameToUser(User.Identity.Name);
+            product.UserId = owner.UserId;
             product.DatePublished = DateTime.Now;
             product.Status = Status.Available;
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest();

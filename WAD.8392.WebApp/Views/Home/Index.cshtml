@@ -3,81 +3,139 @@
 }
 
 <div class="text-center" ng-app ="MusicInstrumentsSpa">
-    <div ng-view>
+        <div ng-view>
 
+        </div>
     </div>
-</div>
 
-@section Scripts {
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js" type="text/javascript"></script>
-<script src="https://code.angularjs.org/1.8.2/angular-route.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    var app = angular.module('MusicInstrumentsSpa', ['ngRoute']);
-    app.config(function ($routeProvider) {
-        $routeProvider
-            .when('/', {
-                templateUrl: 'pages/index.html',
-                controller: 'IndexController'
+    @section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js" type="text/javascript"></script>
+    <script src="https://code.angularjs.org/1.8.2/angular-route.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var app = angular.module('MusicInstrumentsSpa', ['ngRoute', 'ngStorage']);
+        
+        app.config(function ($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'pages/index.html',
+                    controller: 'IndexController'
+                })
+                .when('/Users', {
+                    templateUrl: 'pages/users.html',
+                    controller: 'UsersController'
+                })
+                .when('/SignUp', {
+                    templateUrl: 'pages/registration.html',
+                    controller: 'RegisterController'
+                })
+                .when('/SignIn', {
+                    templateUrl: 'pages/login.html',
+                    controller: 'LoginController'
+                })
+                .when('/SignOut', {
+                    templateUrl: 'pages/logout.html',
+                    controller: 'LoginController'
+                })
+                .when('/AddProduct', {
+                    templateUrl: 'pages/add_product.html',
+                    controller: 'AddProductController'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                })
+        });
+        app.controller('IndexController', ['$scope', '$http', function ($scope, $http) {
+            $scope.message = "Welcome to the App. See the most recent products available!";
+            $scope.products = [];
+             $http.get("@Url.Action("GetProducts", "Products")").then(function (response) {
+                $scope.products = response.data;
             })
-            .when('/Users', {
-                templateUrl: 'pages/users.html',
-                controller: 'UsersController'
-            })
-            .when('/SignUp', {
-                templateUrl: 'pages/registration.html',
-                controller: 'RegisterController'
-            })
-            .when('/SignIn', {
-                templateUrl: 'pages/login.html',
-                controller: 'LoginController'
-            })
-            .otherwise({
-                redirectTo: '/'
-            })
-    });
-    app.controller('IndexController', ['$scope', '$http', function ($scope, $http) {
-        $scope.message = "Welcome to the App. See the most recent products available!";
-        $scope.products = [];
-         $http.get("@Url.Action("GetProducts", "Products")").then(function (response) {
-            $scope.products = response.data;
-        })
-    }]);
-    app.controller('UsersController', ['$scope', '$http', function ($scope, $http) {
-        $scope.users = [];
-        $http.get("@Url.Action("GetUsers", "Users")").then(function (response) {
-            $scope.users = response.data;
+        }]);
+        app.controller('UsersController', ['$scope', '$http', "$localStorage",function ($scope, $http, $localStorage) {
+            $scope.users = [];
+            $scope.currentUser = $localStorage.currentUser;
+            $http.get("@Url.Action("GetUsers", "Users")").then(function (response) {
+                $scope.users = response.data;
             $scope.users.forEach(function (user) {
-                var date = new Date(user.dateOfBirth);
-                var year = date.getFullYear();
-                var month = date.getMonth();
-                var day = date.getDate();
-                user.dateOfBirth = `${day}/${month + 1}/${year}`;
+                    var date = new Date(user.dateOfBirth);
+                    var year = date.getFullYear();
+                    var month = date.getMonth();
+                    var day = date.getDate();
+                    user.dateOfBirth = `${day}/${month + 1}/${year}`;
+                })
             })
-        })
-    }]);
-    app.controller('RegisterController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
-        $scope.user = {
-            id: 0,
-            firstName: '',
-            lastName: '',
-            phoneNumber: null,
-            dateOfBirth: null,
-            email: null,
-            userName: '',
-            password: ''
-        }
-        $scope.Register = function () {
-            $http.post("@Url.Action("PostUser", "Users")", $scope.user).then(function (response) {
-            $location.path('/Users')
-                });
-        }
-    }])
-    app.controller('LoginController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
-        $scope.loggedUser = {
-            userName: '',
-            password: ''
-        }
-    }])
+        }]);
+        app.controller('RegisterController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+            $scope.user = {
+                id: 0,
+                firstName: '',
+                lastName: '',
+                phoneNumber: null,
+                dateOfBirth: null,
+                email: null,
+                userName: '',
+                password: ''
+            }
+            $scope.Register = function () {
+                $http.post("@Url.Action("PostUser", "Users")", $scope.user).then(function (response) {
+                $location.path('/Users')
+                    });
+            }
+        }])
+        app.controller('LoginController', ['$scope', '$http', '$location',  function ($scope, $http, $location, ) {
+            $scope.login = {
+                userName: $scope.userName,
+                password: $scope.password
+            }
+            $scope.message = "";
+            $scope.SignIn = function () {
+                 $http.post("@Url.Action("Authenticate", "Authenticate")", $scope.login).then(
+                     function (response) {
+                            $localStorage.currentUser = { userName: $scope.login.userName, token: response.data };
+                         $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
+                         $location.path('/Users');
 
-</script>
-}
+                    },
+                     function (error) {
+                         $scope.message = "Login failed";
+                    })
+            }
+            $scope.SignOut = function () {
+                delete $localStorage.currentUser;
+                $http.defaults.headers.common.Authorization = '';
+            }
+
+        }]);
+        app.controller('AddProductController', ['$http', '$scope', '$location', '$localStorage', function ($http, $scope, $location, $localStorage) {
+            $scope.message = "";
+            $scope.PermitAddingProduct;
+            $scope.product = {
+                productId : 0,
+                productName: '',
+                productDescription: '',
+                Condition: 0,
+                Price: 0,
+                Status: 0,
+                Location: 0,
+                ManufacturerId: 0,
+                ProductSubcategoryId: 0
+            }
+            $scope.manufacturers = [];
+            $scope.productSubcategories = [];
+            if ($localStorage.currentUser) {
+                $scope.PermitAddingProduct = false;
+                $http.get("@Url.Action("GetManufacturers","Manufacturers")").then(function (response) {
+                    $scope.manufacturers = response.data;
+                })
+                $http.get("@Url.Action("GetProductSubcategories", "ProductSubcategories")").then(function (response) {
+                    $scope.productSubcategories = response.data;
+                })
+            } else {
+                $scope.message = "To add a product you should sign in first";
+                $scope.PermitAddingProduct = true;
+            }
+        }])
+
+    </script>
+    }

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
+using WAD._8392.WebApp.DTO;
 using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
@@ -16,11 +18,12 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class UsersController : GenericController<User>
     {
-
+        
         public UsersController(IRepository<User> repository):base(repository)
         {
         }
 
+        [Authorize]
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -32,6 +35,7 @@ namespace WAD._8392.WebApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
+            
             var user = await _repository.GetByIdAsync(id);
 
             if (user == null)
