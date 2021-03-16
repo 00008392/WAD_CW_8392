@@ -1,6 +1,7 @@
 ﻿<div class="container">
     <div class="row justify-content-center">
         <div class="col-5">
+            <p>{{message}}</p>
             <label>
                 Product name
                 <input type="text" ng-model="product.productName" />
@@ -11,21 +12,37 @@
             </label>
             <label>
                 Price
-                <input type="number" ng-model="product.Price" />
+                <input type="number" ng-model="product.price" />
             </label>
             <label>
                 Location
-                <input type="tel" ng-model="product.Location" />
+                <input type="tel" ng-model="product.location" />
             </label>
             <label>
                 Manufacturer
-                <select ng-options="manufacturer as manufacturer.manufacturerName for manufacturer in manufacturers track by manufacturer.manufacturerId" ng-model="selected"></select>
+                <select ng-options="m as m.manufacturerName for m in manufacturers track by m.manufacturerId" ng-model="manufacturerSelected" ng-change="onChange(manufacturerSelected.manufacturerId, 'manufacturerId')">
+                    <option value="">Please select manufacturer</option>
+                </select>
             </label>
             <label>
                 Subcategory
-                <select ng-options="productSubcategory as productSubcategory.subcategoryName for productSubcategory in productSubcategories track by productSubcategory.productSubcategoryId" ng-model="selected"></select>
+                <select ng-options="p as p.subcategoryName for p in productSubcategories track by p.productSubcategoryId" ng-model="categorySeleted" ng-change="onChange(categorySeleted.productSubcategoryId, 'productSubcategoryId')">
+                    <option value="">Please select subcategory</option>
+                </select>
             </label>
-            <input type="button" ng-disabled="PermitAddingProduct" ng-click="Register()" value="Add product" />
+            <label>
+                Condition
+                <select ng-options="c as c.condName for c in conditions track by c.condValue" ng-model="selectedCondition" ng-change="onChange(selectedCondition.condValue, 'condition')">
+                    <option value="">Please select condition</option>
+                </select>
+            </label>
+            <label>
+                Status
+                <select ng-options="s as s.statusName for s in statuses track by s.statusValue" ng-model="selectedStatus" ng-change="onChange(selectedStatus.statusValue, 'status')">
+                    <option value="">Change status</option>
+                </select>
+            </label>
+            <input type="button" ng-disabled="PermitSavingProduct" ng-click="Save()" value="Add product" />
         </div>
     </div>
 </div>

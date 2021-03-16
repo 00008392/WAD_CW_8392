@@ -18,5 +18,12 @@ namespace WAD._8392.DAL.Context
         public virtual DbSet<ProductCategory> ProductCategories { get; set; }
         public virtual DbSet<ProductSubcategory> ProductSubcategories { get; set; }
         public virtual DbSet<Manufacturer> Manufacturers { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Owner)
+                .WithMany(t => t.Products)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

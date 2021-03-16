@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -87,8 +88,7 @@ namespace WAD._8392.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            var owner = await _mapper.MapUsernameToUser(User.Identity.Name);
-            product.UserId = owner.UserId;
+            product.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             product.DatePublished = DateTime.Now;
             product.Status = Status.Available;
             

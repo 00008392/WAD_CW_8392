@@ -27,14 +27,15 @@ namespace WAD._8392.WebApp.LoginHandling
             {
                 return null;
             }
-
+            var user = users.FirstOrDefault(u => u.UserName == username && u.Password == password);
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = AuthOptions.TokenKey();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, username)
+                    new Claim(ClaimTypes.Name, username),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(

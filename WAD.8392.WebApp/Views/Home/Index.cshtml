@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         var app = angular.module('MusicInstrumentsSpa', ['ngRoute', 'ngStorage']);
-        
+
         app.config(function ($routeProvider) {
             $routeProvider
                 .when('/', {
@@ -45,6 +45,29 @@
                     redirectTo: '/'
                 })
         });
+        app.service('AuthenticationService', ['$http', function ($http) {
+            var service = {};
+            service.Login = function (login, callback) {
+                if (localStorage.getItem('username') != null) {
+                    callback(false);
+                    return;
+                }
+                $http.post("@Url.Action("Authenticate", "Authenticate")", login).then(function (response) {
+                    localStorage.setItem('username', login.userName);
+                    localStorage.setItem('token', response.data);
+                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
+                    callback(true);
+            }, function (error) {
+                callback(false);
+                })
+            }
+            service.Logout = function () {
+                localStorage.clear();
+                $http.defaults.headers.common.Authorization = '';
+            }
+            return service;
+        }])
+
         app.controller('IndexController', ['$scope', '$http', function ($scope, $http) {
             $scope.message = "Welcome to the App. See the most recent products available!";
             $scope.products = [];
@@ -52,10 +75,12 @@
                 $scope.products = response.data;
             })
         }]);
-        app.controller('UsersController', ['$scope', '$http', "$localStorage",function ($scope, $http, $localStorage) {
+        app.controller('UsersController', ['$scope', '$http', function ($scope, $http) {
             $scope.users = [];
-            $scope.currentUser = $localStorage.currentUser;
+            $scope.currentUser = {};
+            $scope.loggedUser = localStorage.getItem('username');
             $http.get("@Url.Action("GetUsers", "Users")").then(function (response) {
+
                 $scope.users = response.data;
             $scope.users.forEach(function (user) {
                     var date = new Date(user.dateOfBirth);
@@ -66,7 +91,7 @@
                 })
             })
         }]);
-        app.controller('RegisterController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+        app.controller('RegisterController', ['$scope', '$http', '$location', 'AuthenticationService', function ($scope, $http, $location, AuthenticationService) {
             $scope.user = {
                 id: 0,
                 firstName: '',
@@ -77,65 +102,106 @@
                 userName: '',
                 password: ''
             }
+
             $scope.Register = function () {
                 $http.post("@Url.Action("PostUser", "Users")", $scope.user).then(function (response) {
-                $location.path('/Users')
+                    $scope.login = {
+                        userName: $scope.user.userName,
+                        password: $scope.user.password
+                    }
+                    AuthenticationService.Login($scope.login, function (result) {
+                        if (result) {
+                            $location.path('/Users');
+                        } else {
+                            $scope.message = "Something went wrong";
+                        }
+                    })
                     });
             }
         }])
-        app.controller('LoginController', ['$scope', '$http', '$location',  function ($scope, $http, $location, ) {
+        app.controller('LoginController', ['$scope', '$http', '$location', 'AuthenticationService', function ($scope, $http, $location, AuthenticationService) {
             $scope.login = {
                 userName: $scope.userName,
                 password: $scope.password
             }
             $scope.message = "";
             $scope.SignIn = function () {
-                 $http.post("@Url.Action("Authenticate", "Authenticate")", $scope.login).then(
-                     function (response) {
-                            $localStorage.currentUser = { userName: $scope.login.userName, token: response.data };
-                         $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
-                         $location.path('/Users');
-
-                    },
-                     function (error) {
-                         $scope.message = "Login failed";
-                    })
+                AuthenticationService.Login($scope.login, function (result) {
+                    if (result) {
+                        $location.path('/Users');
+                    } else {
+                        $scope.message = "Login failed";
+                    }
+                })
             }
             $scope.SignOut = function () {
-                delete $localStorage.currentUser;
-                $http.defaults.headers.common.Authorization = '';
+                AuthenticationService.Logout();
+                $location.path('/');
             }
-
         }]);
-        app.controller('AddProductController', ['$http', '$scope', '$location', '$localStorage', function ($http, $scope, $location, $localStorage) {
+        app.controller('AddProductController', ['$http', '$scope', '$location', function ($http, $scope, $location) {
             $scope.message = "";
-            $scope.PermitAddingProduct;
-            $scope.product = {
-                productId : 0,
-                productName: '',
-                productDescription: '',
-                Condition: 0,
-                Price: 0,
-                Status: 0,
-                Location: 0,
-                ManufacturerId: 0,
-                ProductSubcategoryId: 0
-            }
+            $scope.PermitSavingProduct;
             $scope.manufacturers = [];
             $scope.productSubcategories = [];
-            if ($localStorage.currentUser) {
-                $scope.PermitAddingProduct = false;
-                $http.get("@Url.Action("GetManufacturers","Manufacturers")").then(function (response) {
-                    $scope.manufacturers = response.data;
-                })
-                $http.get("@Url.Action("GetProductSubcategories", "ProductSubcategories")").then(function (response) {
-                    $scope.productSubcategories = response.data;
-                })
-            } else {
+            $scope.conditions = [
+                {
+                    condValue: 0,
+                    condName: 'New'
+                },
+                {
+                    condValue: 1,
+                    condName: 'Medium'
+                },
+                {
+                    condValue: 2,
+                    condName: 'Old'
+                }
+            ]
+            $scope.statuses = [
+                {
+                    statusValue: 0,
+                    statusName: 'Available'
+                },
+                {
+                    statusValue: 1,
+                    statusName: 'Booked'
+                },
+                {
+                    statusValue: 2,
+                    statusName: 'Sold'
+                }
+            ]
+
+            $http.get("@Url.Action("GetManufacturers","Manufacturers")").then(function (response) {
+                $scope.manufacturers = response.data;
+            
+            })
+             $http.get("@Url.Action("GetProductSubcategories", "ProductSubcategories")").then(function (response) {
+                 $scope.productSubcategories = response.data;
+             })
+
+            if (localStorage.getItem('username') == null) {
                 $scope.message = "To add a product you should sign in first";
-                $scope.PermitAddingProduct = true;
+                $scope.PermitSavingProduct = true;
+            }
+                
+            
+            $scope.onChange = function (item, context) {
+                $scope.product[context] = item
+            }
+            $scope.product = null;
+            $scope.Save = function () {
+                $http.post("@Url.Action("PostProduct", "Products")", $scope.product).then(function (response) {
+                    $location.path('/');
+                }, function (error) {
+                        $scope.message = error.data;
+                })
             }
         }])
+        window.onunload = function () {
+            localStorage.clear();
 
+        }
     </script>
     }
