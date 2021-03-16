@@ -24,6 +24,9 @@ namespace WAD._8392.DAL.Context
                 .HasOne(p => p.Owner)
                 .WithMany(t => t.Products)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.UserName)
+                .IsUnique(true);
         }
     }
 }

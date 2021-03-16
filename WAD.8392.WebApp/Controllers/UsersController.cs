@@ -23,7 +23,6 @@ namespace WAD._8392.WebApp.Controllers
         {
         }
 
-        [Authorize]
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -85,12 +84,7 @@ namespace WAD._8392.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            List<User> users = await _repository.GetAllAsync();
-            User person = users.Select(person => person).FirstOrDefault(person => person.UserName == user.UserName);
-            if(person!=null)
-            {
-                ModelState.AddModelError(user.UserName, "The person with the given username already exists");
-            }
+           
             
             if(!ModelState.IsValid)
             {
