@@ -29,7 +29,7 @@ namespace WAD._8392.DAL.Repositories
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _context.Products.Include("Manufacturer").Include("Owner").Include("ProductSubcategory").ToListAsync();
+            return await _context.Products.Include("Manufacturer").Include("Owner").Include("ProductSubcategory").OrderByDescending(p=>p.DatePublished).ToListAsync();
         }
 
         public async Task<Product> GetByIdAsync(int id)

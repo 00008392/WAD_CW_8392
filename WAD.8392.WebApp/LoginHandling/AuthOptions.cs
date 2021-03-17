@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace WAD._8392.WebApp.LoginHandling
 {
     public class AuthOptions
@@ -13,6 +14,7 @@ namespace WAD._8392.WebApp.LoginHandling
         public static byte[] TokenKey()
         {
             return Encoding.ASCII.GetBytes(KEY);
+
         }
     }
 }

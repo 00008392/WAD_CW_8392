@@ -41,10 +41,21 @@
                     templateUrl: 'pages/add_product.html',
                     controller: 'AddProductController'
                 })
+                .when('/MyProducts', {
+                    templateUrl: 'pages/user_products.html',
+                    controller: 'UserProductsController'
+                })
                 .otherwise({
                     redirectTo: '/'
                 })
         });
+        //app.run(['$rootScope','$templateCache',function ($rootScope, $templateCache) {
+        //    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        //        if (typeof (current) !== 'undefined') {
+        //            $templateCache.remove(current.templateUrl);
+        //        }
+        //    });
+        //}]);
         app.service('AuthenticationService', ['$http', function ($http) {
             var service = {};
             service.Login = function (login, callback) {
@@ -102,8 +113,9 @@
                 userName: '',
                 password: ''
             }
-
+            $scope.message = "";
             $scope.Register = function () {
+
                 $http.post("@Url.Action("PostUser", "Users")", $scope.user).then(function (response) {
                     $scope.login = {
                         userName: $scope.user.userName,
@@ -116,8 +128,11 @@
                             $scope.message = "Something went wrong";
                         }
                     })
-                    });
+                }, function (error) {
+                        $scope.message = error.data.title;
+                });
             }
+            
         }])
         app.controller('LoginController', ['$scope', '$http', '$location', 'AuthenticationService', function ($scope, $http, $location, AuthenticationService) {
             $scope.login = {
@@ -198,6 +213,9 @@
                         $scope.message = error.data;
                 })
             }
+        }])
+        app.controller('UserProductsController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+
         }])
         window.onunload = function () {
             localStorage.clear();

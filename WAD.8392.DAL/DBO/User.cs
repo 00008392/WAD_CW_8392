@@ -18,6 +18,8 @@ namespace WAD._8392.DAL.DBO
         public string LastName { get; set; }
         [DateOfBirthValidation(18, ErrorMessage = "Should be at least 18 y.o.")]
         public DateTime DateOfBirth { get; set; }
+        
+        public DateTime DateRegistered { get; set; }
 
         [Required]
         [DataType(DataType.PhoneNumber)]

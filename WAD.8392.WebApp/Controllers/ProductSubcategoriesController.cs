@@ -22,9 +22,11 @@ namespace WAD._8392.WebApp.Controllers
 
         // GET: api/ProductSubcategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories()
+        public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories(int? id)
         {
-            return await _repository.GetAllAsync();
+            var subcategories = await _repository.GetAllAsync();
+            var filtered = subcategories.Where(s => s.ProductCategoryId == id || s.ProductCategoryId == null);
+            return Ok(filtered);
         }
 
         // GET: api/ProductSubcategories/5

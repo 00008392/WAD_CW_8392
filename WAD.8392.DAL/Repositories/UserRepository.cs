@@ -32,7 +32,7 @@ namespace WAD._8392.DAL.Repositories
 
         public async Task<List<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.OrderByDescending(user=>user.DateRegistered).ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)

@@ -22,7 +22,6 @@ namespace WAD._8392.WebApp.Controllers
         public UsersController(IRepository<User> repository):base(repository)
         {
         }
-
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -84,13 +83,19 @@ namespace WAD._8392.WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-           
-            
+            var users = await _repository.GetAllAsync();
+            var u = users.FirstOrDefault(u => u.UserName.Equals(user.UserName));
+            if(u!=null)
+            {
+                ModelState.AddModelError(user.UserName, "This username is already taken");
+            }
+
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            await _repository.AddAsync(user);
+            user.DateRegistered = DateTime.Now;
+               await _repository.AddAsync(user);
 
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }

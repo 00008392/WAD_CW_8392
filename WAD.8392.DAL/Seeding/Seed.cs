@@ -63,6 +63,7 @@ namespace WAD._8392.DAL.Seeding
             }
             if (!context.ProductCategories.Any())
             {
+
                 var productCategories = new List<ProductCategory>()
           {
              new ProductCategory {CategoryName = "String"},
@@ -79,53 +80,70 @@ namespace WAD._8392.DAL.Seeding
             }
             if (!context.ProductSubcategories.Any())
             {
+                var str = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "String").ProductCategoryId;
+                var wind = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Wind").ProductCategoryId;
+                var key = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Keyboard").ProductCategoryId;
+                var percussion = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Percussion").ProductCategoryId;
+                var brass = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Brass").ProductCategoryId;
+                var electro = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Electronic").ProductCategoryId;
+
                 var productSubcategories = new List<ProductSubcategory>()
           {
-             new ProductSubcategory { SubcategoryName ="Violin", ProductCategoryId = 1},
-             new ProductSubcategory { SubcategoryName ="Guitar", ProductCategoryId = 1},
-             new ProductSubcategory { SubcategoryName ="Cello", ProductCategoryId = 1},
-             new ProductSubcategory { SubcategoryName ="Double Bass", ProductCategoryId = 1},
-             new ProductSubcategory { SubcategoryName ="Harp", ProductCategoryId = 1},
-             new ProductSubcategory { SubcategoryName ="Flute", ProductCategoryId = 2},
-             new ProductSubcategory { SubcategoryName ="Clarinet", ProductCategoryId = 2},
-             new ProductSubcategory { SubcategoryName ="Contrabassoon", ProductCategoryId = 2},
-             new ProductSubcategory { SubcategoryName ="Piano", ProductCategoryId = 3},
-             new ProductSubcategory { SubcategoryName ="Organ", ProductCategoryId = 3},
-             new ProductSubcategory { SubcategoryName ="Accordion", ProductCategoryId = 3},
-             new ProductSubcategory { SubcategoryName ="Drum", ProductCategoryId = 4},
-             new ProductSubcategory { SubcategoryName ="Trumpet", ProductCategoryId = 5},
-             new ProductSubcategory { SubcategoryName ="Trombone", ProductCategoryId = 5},
-             new ProductSubcategory { SubcategoryName ="Tuba", ProductCategoryId = 5},
-             new ProductSubcategory { SubcategoryName ="Electronic guitar", ProductCategoryId = 6},
-             new ProductSubcategory { SubcategoryName ="Digital piano", ProductCategoryId = 6},
-             new ProductSubcategory { SubcategoryName ="Syntezator", ProductCategoryId = 6},
-             new ProductSubcategory { SubcategoryName ="Digital Grand piano", ProductCategoryId = 6},
-             new ProductSubcategory { SubcategoryName ="Grand piano", ProductCategoryId = 3}
+             new ProductSubcategory { SubcategoryName ="Violin", ProductCategoryId = str},
+             new ProductSubcategory { SubcategoryName ="Guitar", ProductCategoryId = str},
+             new ProductSubcategory { SubcategoryName ="Cello", ProductCategoryId = str},
+             new ProductSubcategory { SubcategoryName ="Double Bass", ProductCategoryId = str},
+             new ProductSubcategory { SubcategoryName ="Harp", ProductCategoryId = str},
+             new ProductSubcategory { SubcategoryName ="Flute", ProductCategoryId = wind},
+             new ProductSubcategory { SubcategoryName ="Clarinet", ProductCategoryId = wind},
+             new ProductSubcategory { SubcategoryName ="Contrabassoon", ProductCategoryId =wind},
+             new ProductSubcategory { SubcategoryName ="Piano", ProductCategoryId = key},
+             new ProductSubcategory { SubcategoryName ="Organ", ProductCategoryId = key},
+             new ProductSubcategory { SubcategoryName ="Accordion", ProductCategoryId = key},
+             new ProductSubcategory { SubcategoryName ="Drum", ProductCategoryId = percussion},
+             new ProductSubcategory { SubcategoryName ="Trumpet", ProductCategoryId = brass},
+             new ProductSubcategory { SubcategoryName ="Trombone", ProductCategoryId = brass},
+             new ProductSubcategory { SubcategoryName ="Tuba", ProductCategoryId = brass},
+             new ProductSubcategory { SubcategoryName ="Electronic guitar", ProductCategoryId = electro},
+             new ProductSubcategory { SubcategoryName ="Digital piano", ProductCategoryId = electro},
+             new ProductSubcategory { SubcategoryName ="Syntezator", ProductCategoryId = electro},
+             new ProductSubcategory { SubcategoryName ="Digital Grand piano", ProductCategoryId = electro},
+             new ProductSubcategory { SubcategoryName ="Grand piano", ProductCategoryId = key}
           };
                 context.ProductSubcategories.AddRange(productSubcategories);
                 context.SaveChanges();
             }
             if (!context.Products.Any())
             {
+                var roland = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Roland").ManufacturerId;
+                var casio = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Casio").ManufacturerId;
+                var taylor = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Taylor").ManufacturerId;
+                var yamaha = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Yamaha").ManufacturerId;
+
+                var digital = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Digital piano").ProductSubcategoryId;
+                var syntezator = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Syntezator").ProductSubcategoryId;
+                var violin = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Violin").ProductSubcategoryId;
+                var guitar = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Guitar").ProductSubcategoryId;
+                var grand = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Digital Grand piano").ProductSubcategoryId;
                 var products = new List<Product>()
           {
              new Product { ProductName = "ROLAND HP603 CB", ProductDescription=@" built-in wireless Bluetooth® MIDI support for working with apps like Roland’s 
                                                                                 Piano Partner 2 and Piano Designer on your smartphone or tablet. The HP603A also includes Bluetooth audio support, 
                                                                                 allowing you to wirelessly stream music from your mobile device through the piano’s integrated sound system.",
                            Condition = Condition.New, DatePublished = DateTime.Parse("12-12-2020", CultureInfo.InvariantCulture), Location="Some Street, 4, 11",
-                           ManufacturerId = 3, UserId = 1, Price = 2762, ProductSubcategoryId=9, Status = Status.Available},
+                           ManufacturerId = roland, UserId = 1, Price = 2762, ProductSubcategoryId=digital, Status = Status.Available},
              new Product { ProductName = "Casio CT-X3000", ProductDescription=@" Almost new syntezator of high quality for affordable price",
                            Condition = Condition.New, DatePublished = DateTime.Parse("3-13-2021", CultureInfo.InvariantCulture), Location="Some other Street, 5, 61",
-                           ManufacturerId = 17, UserId = 2, Price = 400, ProductSubcategoryId=18, Status = Status.Available},
+                           ManufacturerId = casio, UserId = 2, Price = 400, ProductSubcategoryId=syntezator, Status = Status.Available},
              new Product { ProductName = "Taylor Baby BT2 Left Handed Acoustic Travel Guitar", ProductDescription=@" Designed to be a high-quality sonic companion for travelling, perfect for life on the road",
                            Condition = Condition.Medium, DatePublished = DateTime.Parse("3-09-2021", CultureInfo.InvariantCulture), Location="Somewhere, 5b, 81",
-                           ManufacturerId = 12, UserId = 3, Price = 359, ProductSubcategoryId=2, Status = Status.Available},
+                           ManufacturerId = taylor, UserId = 3, Price = 359, ProductSubcategoryId=guitar, Status = Status.Available},
              new Product { ProductName = "Yamaha V10SG Intermediate Violin Pack, Full Size", ProductDescription=@" Complete with a case, Pernambuco bow, and quality Dominant strings",
                            Condition = Condition.Old, DatePublished = DateTime.Parse("3-07-2021", CultureInfo.InvariantCulture), Location="Somewhere, 5a, 32",
-                           ManufacturerId = 2, UserId = 4, Price = 1099, ProductSubcategoryId=1, Status = Status.Available},
+                           ManufacturerId = yamaha, UserId = 4, Price = 1099, ProductSubcategoryId=violin, Status = Status.Available},
              new Product { ProductName = "Roland GP607 Digital Grand Piano, Polished White", ProductDescription=@" Stream Music Through the Piano's Speakers with Bluetooth Audio",
                            Condition = Condition.Medium, DatePublished = DateTime.Parse("3-01-2021", CultureInfo.InvariantCulture), Location="Somewhere, 7, 45",
-                           ManufacturerId = 3, UserId = 5, Price = 4732, ProductSubcategoryId=20, Status = Status.Available}
+                           ManufacturerId = roland, UserId = 5, Price = 4732, ProductSubcategoryId=grand, Status = Status.Available}
           };
                 context.Products.AddRange(products);
                 context.SaveChanges();

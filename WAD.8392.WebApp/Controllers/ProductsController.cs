@@ -10,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
 using WAD._8392.DAL.Repositories;
+using WAD._8392.WebApp.Filters;
 using WAD._8392.WebApp.Mappings;
+using WAD._8392.WebApp.QueryParameters;
 
 namespace WAD._8392.WebApp.Controllers
 {
@@ -18,19 +20,36 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ProductsController : GenericController<Product>
     {
-        private readonly UsernameMapper _mapper;
+        private readonly IStrategyFactory _factory;
 
-        public ProductsController(IRepository<Product> repository, UsernameMapper mapper):base(repository)
+        public ProductsController(IRepository<Product> repository, IStrategyFactory factory):base(repository)
         {
-            _mapper = mapper;
+            _factory = factory;
         }
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] FilterQueryParameter parameter)
         {
-            
-            return await _repository.GetAllAsync();
+           var products = await _repository.GetAllAsync();
+            if(parameter.Name==null)
+            {
+                return products;
+            } else
+            {
+                var strategy = _factory.GetStrategy(parameter.Name);
+                if (strategy == null)
+                {
+                    ModelState.AddModelError("", "Invalid parameter name");
+                    return BadRequest(ModelState);
+                }
+                var context = new FilterContext();
+                context.SetStrategy(strategy);
+                var result = context.ExecuteFiltering(parameter.Value, products);
+                return Ok(result);
+            }
+       
+
         }
 
         // GET: api/Products/5
