@@ -11,6 +11,8 @@ using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
 using WAD._8392.WebApp.DTO;
 using WAD._8392.DAL.Repositories;
+using WAD._8392.WebApp.Mappings;
+using System.Security.Claims;
 
 namespace WAD._8392.WebApp.Controllers
 {
@@ -18,22 +20,40 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class UsersController : GenericController<User>
     {
-        
-        public UsersController(IRepository<User> repository):base(repository)
+        private readonly IMapper<User, UserDetails> _mapper;
+        public UsersController(IRepository<User> repository, IMapper<User, UserDetails> mapper) :base(repository)
         {
+            _mapper = mapper;
         }
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _repository.GetAllAsync();
+            var users = await _repository.GetAllAsync();
+            var dtoUsers = users.Select(user => _mapper.ConvertToDTO(user)).ToList();
+            return Ok(dtoUsers);
         }
 
-        // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             
+            var user = await _repository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.ConvertToDTO(user));
+        }
+
+        [Authorize]
+        [HttpGet("Account")]
+        public async Task<ActionResult<User>> GetLoggedUser()
+        {
+            var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+           
             var user = await _repository.GetByIdAsync(id);
 
             if (user == null)
@@ -46,12 +66,18 @@ namespace WAD._8392.WebApp.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
             if (id != user.UserId)
             {
                 return BadRequest();
+            }
+            if (!IsAuthorized(id))
+            {
+                ModelState.AddModelError("Authoriation", "You should login into this account to modify it");
+                return Unauthorized(ModelState);
             }
             if (!ModelState.IsValid)
             {
@@ -84,7 +110,7 @@ namespace WAD._8392.WebApp.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
             var users = await _repository.GetAllAsync();
-            var u = users.FirstOrDefault(u => u.UserName.Equals(user.UserName));
+            var u = users.FirstOrDefault(u => u.UserName.ToLower().Equals(user.UserName.ToLower()));
             if(u!=null)
             {
                 ModelState.AddModelError(user.UserName, "This username is already taken");
@@ -101,9 +127,15 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         // DELETE: api/Users/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            if (!IsAuthorized(id))
+            {
+                ModelState.AddModelError("Authoriation", "You should login into this account to delete it");
+                return Unauthorized(ModelState);
+            }
             var user = await _repository.GetByIdAsync(id);
             if (user == null)
             {

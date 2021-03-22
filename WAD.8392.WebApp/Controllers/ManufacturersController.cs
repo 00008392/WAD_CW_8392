@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // PUT: api/Manufacturers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutManufacturer(int id, Manufacturer manufacturer)
         {
@@ -78,6 +80,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // POST: api/Manufacturers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Manufacturer>> PostManufacturer(Manufacturer manufacturer)
         {
@@ -91,6 +94,7 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         // DELETE: api/Manufacturers/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteManufacturer(int id)
         {

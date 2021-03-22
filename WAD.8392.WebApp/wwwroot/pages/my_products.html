@@ -1,4 +1,5 @@
-﻿<table class="table">
+﻿<p>{{message}}</p>
+<table class="table">
     <thead>
         <tr>
             <td>Name</td>
@@ -8,7 +9,6 @@
             <td>Manufacturer</td>
             <td>Subcategory</td>
             <td>Location</td>
-            <td>User</td>
             <td>Date published</td>
         </tr>
     </thead>
@@ -21,8 +21,8 @@
             <td>{{product.manufacturer.manufacturerName}}</td>
             <td>{{product.productSubcategory.subcategoryName}}</td>
             <td>{{product.location}}</td>
-            <td>{{product.owner.userName}}</td>
             <td>{{product.datePublished}}</td>
         </tr>
     </tbody>
 </table>
+<a href="#!/AddProduct" type="button" class="btn-primary">Add product</a>

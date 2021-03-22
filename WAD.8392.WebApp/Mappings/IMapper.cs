@@ -9,6 +9,5 @@ namespace WAD._8392.WebApp.Mappings
                                   where D: class
     {
         D ConvertToDTO(O obj);
-        Task<O> ConvertFromDTO(D dto); 
     }
 }

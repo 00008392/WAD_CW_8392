@@ -30,7 +30,7 @@ namespace WAD._8392.DAL.DBO
         public DateTime DatePublished { get; set; } 
         public int? ManufacturerId { get; set; }
         public int? ProductSubcategoryId { get; set; }
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
         public virtual Manufacturer Manufacturer { get; set; }
         public virtual ProductSubcategory ProductSubcategory { get; set; }
         public virtual User Owner { get; set; }

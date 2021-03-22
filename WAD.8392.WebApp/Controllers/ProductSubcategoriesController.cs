@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,18 +20,16 @@ namespace WAD._8392.WebApp.Controllers
         public ProductSubcategoriesController(IRepository<ProductSubcategory> repository):base(repository)
         {
         }
-
-        // GET: api/ProductSubcategories
-        [HttpGet]
+        [HttpGet("subcategories")]
         public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories(int? id)
         {
             var subcategories = await _repository.GetAllAsync();
-            var filtered = subcategories.Where(s => s.ProductCategoryId == id || s.ProductCategoryId == null);
-            return Ok(filtered);
+
+                var result = subcategories.Where(s => id==null||s.ProductCategoryId==id);
+                return Ok(result);
         }
 
-        // GET: api/ProductSubcategories/5
-        [HttpGet("{id}")]
+        [HttpGet("subcategories/{id}")]
         public async Task<ActionResult<ProductSubcategory>> GetProductSubcategory(int id)
         {
             var productSubcategory = await _repository.GetByIdAsync(id);
@@ -43,9 +42,9 @@ namespace WAD._8392.WebApp.Controllers
             return productSubcategory;
         }
 
-        // PUT: api/ProductSubcategories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [Authorize]
+        [HttpPut("subcategories/{id}")]
         public async Task<IActionResult> PutProductSubcategory(int id, ProductSubcategory productSubcategory)
         {
             if (id != productSubcategory.ProductSubcategoryId)
@@ -77,9 +76,9 @@ namespace WAD._8392.WebApp.Controllers
             return NoContent();
         }
 
-        // POST: api/ProductSubcategories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [Authorize]
+        [HttpPost("subcategories")]
         public async Task<ActionResult<ProductSubcategory>> PostProductSubcategory(ProductSubcategory productSubcategory)
         {
             if (!ModelState.IsValid)
@@ -91,8 +90,8 @@ namespace WAD._8392.WebApp.Controllers
             return CreatedAtAction("GetProductSubcategory", new { id = productSubcategory.ProductSubcategoryId }, productSubcategory);
         }
 
-        // DELETE: api/ProductSubcategories/5
-        [HttpDelete("{id}")]
+        [Authorize]
+        [HttpDelete("subcategories/{id}")]
         public async Task<IActionResult> DeleteProductSubcategory(int id)
         {
             var productSubcategory = await _repository.GetByIdAsync(id);

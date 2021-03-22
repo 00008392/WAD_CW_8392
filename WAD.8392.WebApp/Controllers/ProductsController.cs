@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
 using WAD._8392.DAL.Repositories;
-using WAD._8392.WebApp.Filters;
 using WAD._8392.WebApp.Mappings;
 using WAD._8392.WebApp.QueryParameters;
 
@@ -20,36 +19,20 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ProductsController : GenericController<Product>
     {
-        private readonly IStrategyFactory _factory;
 
-        public ProductsController(IRepository<Product> repository, IStrategyFactory factory):base(repository)
+        public ProductsController(IRepository<Product> repository):base(repository)
         {
-            _factory = factory;
         }
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] FilterQueryParameter parameter)
         {
-           var products = await _repository.GetAllAsync();
-            if(parameter.Name==null)
-            {
-                return products;
-            } else
-            {
-                var strategy = _factory.GetStrategy(parameter.Name);
-                if (strategy == null)
-                {
-                    ModelState.AddModelError("", "Invalid parameter name");
-                    return BadRequest(ModelState);
-                }
-                var context = new FilterContext();
-                context.SetStrategy(strategy);
-                var result = context.ExecuteFiltering(parameter.Value, products);
-                return Ok(result);
-            }
-       
-
+           var products = await _repository.GetAllAsync();    
+            var result = products.Where(p=>(parameter.Manufacturer==null||p.ManufacturerId==parameter.Manufacturer)
+            &&(parameter.User==null||p.UserId==parameter.User)
+            &&(parameter.Subcategory==null||p.ProductSubcategoryId==parameter.Subcategory));
+            return Ok(result);
         }
 
         // GET: api/Products/5
@@ -69,6 +52,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -76,6 +60,11 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest();
             }
+            if(!IsAuthorized(product.UserId))
+            {
+                ModelState.AddModelError("Authoriation", "You should login to modify this product");
+                return Unauthorized(ModelState);
+            } 
             if (!ModelState.IsValid)
             {
                 return BadRequest();
@@ -121,6 +110,7 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         // DELETE: api/Products/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
@@ -129,7 +119,11 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return NotFound();
             }
-
+            if (!IsAuthorized(product.UserId))
+            {
+                ModelState.AddModelError("Authoriation", "You should login to delete this product");
+                return Unauthorized(ModelState);
+            }
             await _repository.DeleteAsync(product);
 
             return NoContent();

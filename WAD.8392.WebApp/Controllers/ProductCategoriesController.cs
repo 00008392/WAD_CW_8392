@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,15 +21,13 @@ namespace WAD._8392.WebApp.Controllers
         {
         }
 
-        // GET: api/ProductCategories
-        [HttpGet]
+        [HttpGet("categories")]
         public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
         {
             return await _repository.GetAllAsync();
         }
 
-        // GET: api/ProductCategories/5
-        [HttpGet("{id}")]
+        [HttpGet("categories/{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
             var productCategory = await _repository.GetByIdAsync(id);
@@ -41,9 +40,10 @@ namespace WAD._8392.WebApp.Controllers
             return productCategory;
         }
 
-        // PUT: api/ProductCategories/5
+
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [Authorize]
+        [HttpPut("categories/{id}")]
         public async Task<IActionResult> PutProductCategory(int id, ProductCategory productCategory)
         {
             if (id != productCategory.ProductCategoryId)
@@ -75,9 +75,10 @@ namespace WAD._8392.WebApp.Controllers
             return NoContent();
         }
 
-        // POST: api/ProductCategories
+
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [Authorize]
+        [HttpPost("categories")]
         public async Task<ActionResult<ProductCategory>> PostProductCategory(ProductCategory productCategory)
         {
             if(!ModelState.IsValid)
@@ -88,9 +89,8 @@ namespace WAD._8392.WebApp.Controllers
 
             return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
         }
-
-        // DELETE: api/ProductCategories/5
-        [HttpDelete("{id}")]
+        [Authorize]
+        [HttpDelete("categories/{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {
             var productCategory = await _repository.GetByIdAsync(id);

@@ -29,12 +29,12 @@ namespace WAD._8392.DAL.Repositories
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _context.Products.Include("Manufacturer").Include("Owner").Include("ProductSubcategory").OrderByDescending(p=>p.DatePublished).ToListAsync();
+            return await _context.Products.Include("Manufacturer").Include("Owner").Include("ProductSubcategory").Include("ProductSubcategory.ProductCategory").ToListAsync();
         }
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            var product = await _context.Products.Include("Manufacturer").Include("Owner").Include("ProductSubcategory").FirstOrDefaultAsync(p=>p.ProductId==id);
+            var product = await _context.Products.Include("Manufacturer").Include("Owner").Include("ProductSubcategory").Include("ProductSubcategory.ProductCategory").FirstOrDefaultAsync(p=>p.ProductId==id);
             return product;
         }
 
