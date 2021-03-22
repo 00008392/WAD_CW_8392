@@ -12,7 +12,7 @@ using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class ProductCategoriesController : GenericController<ProductCategory>
     {
@@ -21,13 +21,13 @@ namespace WAD._8392.WebApp.Controllers
         {
         }
 
-        [HttpGet("categories")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
         {
             return await _repository.GetAllAsync();
         }
 
-        [HttpGet("categories/{id}")]
+        [HttpGet("/{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
             var productCategory = await _repository.GetByIdAsync(id);
@@ -43,7 +43,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPut("categories/{id}")]
+        [HttpPut("/{id}")]
         public async Task<IActionResult> PutProductCategory(int id, ProductCategory productCategory)
         {
             if (id != productCategory.ProductCategoryId)
@@ -78,7 +78,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPost("categories")]
+        [HttpPost]
         public async Task<ActionResult<ProductCategory>> PostProductCategory(ProductCategory productCategory)
         {
             if(!ModelState.IsValid)
@@ -90,7 +90,7 @@ namespace WAD._8392.WebApp.Controllers
             return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
         }
         [Authorize]
-        [HttpDelete("categories/{id}")]
+        [HttpDelete("/{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {
             var productCategory = await _repository.GetByIdAsync(id);

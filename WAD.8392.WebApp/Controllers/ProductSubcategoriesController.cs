@@ -12,7 +12,7 @@ using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/subcategories")]
     [ApiController]
     public class ProductSubcategoriesController : GenericController<ProductSubcategory>
     {
@@ -20,7 +20,7 @@ namespace WAD._8392.WebApp.Controllers
         public ProductSubcategoriesController(IRepository<ProductSubcategory> repository):base(repository)
         {
         }
-        [HttpGet("subcategories")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories(int? id)
         {
             var subcategories = await _repository.GetAllAsync();
@@ -29,7 +29,7 @@ namespace WAD._8392.WebApp.Controllers
                 return Ok(result);
         }
 
-        [HttpGet("subcategories/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProductSubcategory>> GetProductSubcategory(int id)
         {
             var productSubcategory = await _repository.GetByIdAsync(id);
@@ -44,7 +44,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPut("subcategories/{id}")]
+        [HttpPut("/{id}")]
         public async Task<IActionResult> PutProductSubcategory(int id, ProductSubcategory productSubcategory)
         {
             if (id != productSubcategory.ProductSubcategoryId)
@@ -78,7 +78,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPost("subcategories")]
+        [HttpPost]
         public async Task<ActionResult<ProductSubcategory>> PostProductSubcategory(ProductSubcategory productSubcategory)
         {
             if (!ModelState.IsValid)
@@ -91,7 +91,7 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         [Authorize]
-        [HttpDelete("subcategories/{id}")]
+        [HttpDelete("/{id}")]
         public async Task<IActionResult> DeleteProductSubcategory(int id)
         {
             var productSubcategory = await _repository.GetByIdAsync(id);
