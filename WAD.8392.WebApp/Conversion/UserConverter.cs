@@ -6,9 +6,9 @@ using WAD._8392.DAL.DBO;
 using WAD._8392.DAL.Repositories;
 using WAD._8392.WebApp.DTO;
 
-namespace WAD._8392.WebApp.Mappings
+namespace WAD._8392.WebApp.Conversion
 {
-    public class UserMapping : IMapper<User, UserDetails>
+    public class UserConverter : IConverter<User, UserDetails>
     {
         public UserDetails ConvertToDTO(User obj)
         {

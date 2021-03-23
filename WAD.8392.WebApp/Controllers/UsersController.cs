@@ -11,7 +11,7 @@ using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
 using WAD._8392.WebApp.DTO;
 using WAD._8392.DAL.Repositories;
-using WAD._8392.WebApp.Mappings;
+using WAD._8392.WebApp.Conversion;
 using System.Security.Claims;
 
 namespace WAD._8392.WebApp.Controllers
@@ -20,17 +20,17 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class UsersController : GenericController<User>
     {
-        private readonly IMapper<User, UserDetails> _mapper;
-        public UsersController(IRepository<User> repository, IMapper<User, UserDetails> mapper) :base(repository)
+        private readonly IConverter<User, UserDetails> _converter;
+        public UsersController(IRepository<User> repository, IConverter<User, UserDetails> converter) :base(repository)
         {
-            _mapper = mapper;
+            _converter = converter;
         }
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _repository.GetAllAsync();
-            var dtoUsers = users.Select(user => _mapper.ConvertToDTO(user)).ToList();
+            var dtoUsers = users.Select(user => _converter.ConvertToDTO(user)).ToList();
             return Ok(dtoUsers);
         }
 
@@ -45,7 +45,7 @@ namespace WAD._8392.WebApp.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.ConvertToDTO(user));
+            return Ok(_converter.ConvertToDTO(user));
         }
 
         [Authorize]

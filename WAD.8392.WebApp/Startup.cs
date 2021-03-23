@@ -18,7 +18,7 @@ using WAD._8392.DAL.DBO;
 using WAD._8392.DAL.Repositories;
 using WAD._8392.WebApp.DTO;
 using WAD._8392.WebApp.LoginHandling;
-using WAD._8392.WebApp.Mappings;
+using WAD._8392.WebApp.Conversion;
 
 namespace WAD._8392.WebApp
 {
@@ -54,7 +54,7 @@ namespace WAD._8392.WebApp
             });
             services.AddControllersWithViews();
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
-            services.AddScoped<IMapper<User, UserDetails>, UserMapping>();
+            services.AddScoped<IConverter<User, UserDetails>, UserConverter>();
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<Product>, ProductRepository>();
             services.AddScoped<IRepository<Manufacturer>, ManufacturerRepository>();
