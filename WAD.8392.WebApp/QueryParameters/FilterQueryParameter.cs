@@ -10,5 +10,6 @@ namespace WAD._8392.WebApp.QueryParameters
         public int? Manufacturer { get; set; }
         public int? User { get; set; }
         public int? Subcategory { get; set; }
+        public int? Status { get; set; }
     }
 }

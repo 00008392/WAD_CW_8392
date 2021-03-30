@@ -76,7 +76,7 @@ namespace WAD._8392.WebApp.Controllers
             }
             if (!IsAuthorized(id))
             {
-                ModelState.AddModelError("Authoriation", "You should login into this account to modify it");
+                ModelState.AddModelError("Authorization", "You are not the owner of this account");
                 return Unauthorized(ModelState);
             }
             if (!ModelState.IsValid)
@@ -113,7 +113,7 @@ namespace WAD._8392.WebApp.Controllers
             var u = users.FirstOrDefault(u => u.UserName.ToLower().Equals(user.UserName.ToLower()));
             if(u!=null)
             {
-                ModelState.AddModelError(user.UserName, "This username is already taken");
+                ModelState.AddModelError("UserName", "This username is already taken");
             }
 
             if(!ModelState.IsValid)
@@ -133,7 +133,7 @@ namespace WAD._8392.WebApp.Controllers
         {
             if (!IsAuthorized(id))
             {
-                ModelState.AddModelError("Authoriation", "You should login into this account to delete it");
+                ModelState.AddModelError("Authorization", "You are not the owner of this account");
                 return Unauthorized(ModelState);
             }
             var user = await _repository.GetByIdAsync(id);

@@ -1,4 +1,5 @@
-﻿<div class="container">
+﻿<div ng-if="!IsLogged">Sign in to add or edit products</div>
+<div ng-if="IsLogged" class="container">
     <div class="row justify-content-center">
         <div class="col-5">
             <p>{{message}}</p>
@@ -36,13 +37,13 @@
                     <option value="">Please select condition</option>
                 </select>
             </label>
-            <label>
+            <label ng-if="editMode">
                 Status
                 <select ng-options="s as s.statusName for s in statuses track by s.statusValue" ng-model="selectedStatus" ng-change="onChange(selectedStatus.statusValue, 'status')">
                     <option value="">Change status</option>
                 </select>
             </label>
-            <input type="button" ng-disabled="PermitSavingProduct" ng-click="Save()" value="Add product" />
+            <input type="button" ng-click="Save()" value="Add product" />
         </div>
     </div>
 </div>

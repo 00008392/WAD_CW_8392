@@ -1,5 +1,6 @@
 ﻿
-<div class="container">
+<p ng-if="!DisplayForm">{{info}}</p>
+<div ng-if="DisplayForm" class="container">
     <div class="row justify-content-center">
         <div class="col-5">
             <p>{{message}}</p>
@@ -32,7 +33,7 @@
                 Password
                 <input type="password" ng-model="user.password" />
             </label>
-            <input type="button" ng-click="Register()" />
+            <input type="button" ng-click="Save()" />
         </div>
     </div>
 </div>

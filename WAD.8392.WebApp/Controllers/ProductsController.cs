@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using WAD._8392.DAL.Context;
 using WAD._8392.DAL.DBO;
 using WAD._8392.DAL.Repositories;
-using WAD._8392.WebApp.Mappings;
 using WAD._8392.WebApp.QueryParameters;
 
 namespace WAD._8392.WebApp.Controllers
@@ -28,10 +27,11 @@ namespace WAD._8392.WebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] FilterQueryParameter parameter)
         {
-           var products = await _repository.GetAllAsync();    
-            var result = products.Where(p=>(parameter.Manufacturer==null||p.ManufacturerId==parameter.Manufacturer)
-            &&(parameter.User==null||p.UserId==parameter.User)
-            &&(parameter.Subcategory==null||p.ProductSubcategoryId==parameter.Subcategory));
+           var products = await _repository.GetAllAsync();
+            var result = products.Where(p => (parameter.Manufacturer == null || p.ManufacturerId == parameter.Manufacturer)
+            && (parameter.User == null || p.UserId == parameter.User)
+            && (parameter.Subcategory == null || p.ProductSubcategoryId == parameter.Subcategory)
+            && (parameter.Status == null || (int)p.Status == parameter.Status)).OrderByDescending(p=>p.DatePublished); 
             return Ok(result);
         }
 
@@ -62,7 +62,7 @@ namespace WAD._8392.WebApp.Controllers
             }
             if(!IsAuthorized(product.UserId))
             {
-                ModelState.AddModelError("Authoriation", "You should login to modify this product");
+                ModelState.AddModelError("Authorization", "You are not the owner of this product");
                 return Unauthorized(ModelState);
             } 
             if (!ModelState.IsValid)
@@ -102,7 +102,7 @@ namespace WAD._8392.WebApp.Controllers
             
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
             await _repository.AddAsync(product);
 
@@ -121,7 +121,7 @@ namespace WAD._8392.WebApp.Controllers
             }
             if (!IsAuthorized(product.UserId))
             {
-                ModelState.AddModelError("Authoriation", "You should login to delete this product");
+                ModelState.AddModelError("Authorization", "You are not the owner of this product");
                 return Unauthorized(ModelState);
             }
             await _repository.DeleteAsync(product);

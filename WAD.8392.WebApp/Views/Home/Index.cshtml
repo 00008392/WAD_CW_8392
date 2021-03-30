@@ -13,6 +13,10 @@
     <script src="https://code.angularjs.org/1.8.2/angular-route.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+
+        function modalClose() {
+            $('modal').modal('hide');
+        }
         var app = angular.module('MusicInstrumentsSpa', ['ngRoute', 'ngStorage']);
 
         app.config(function ($routeProvider) {
@@ -33,13 +37,13 @@
                     templateUrl: 'pages/login.html',
                     controller: 'LoginController'
                 })
-                .when('/SignOut', {
-                    templateUrl: 'pages/logout.html',
-                    controller: 'LoginController'
-                })
                 .when('/AddProduct', {
                     templateUrl: 'pages/add_product.html',
                     controller: 'AddProductController'
+                })
+                .when('/EditProduct', {
+                    templateUrl: 'pages/add_product.html',
+                    controller: 'EditProductController/:productId'
                 })
                 .when('/MyProducts', {
                     templateUrl: 'pages/my_products.html',
@@ -48,6 +52,14 @@
                 .when('/MyAccount', {
                     templateUrl: 'pages/account.html',
                     controller: 'AccountController'
+                })
+                .when('/EditAccount', {
+                    templateUrl: 'pages/registration.html',
+                    controller: 'EditAccountController'
+                })
+                .when('/UserDetails/:UserId', {
+                    templateUrl: 'pages/user_details.html',
+                    controller: 'UserDetailsController'
                 })
                 .otherwise({
                     redirectTo: '/'
@@ -78,8 +90,9 @@
                                  $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
                                 $http.get("@Url.Action("GetLoggedUser", "Users")").then(function (response) {
                                     sessionStorage.setItem('current_user', JSON.stringify(response.data));
-                                 })
-                                callback(true);
+                                    callback(true);
+                                })
+
                             },
                             function (error) {
                                 callback(false);
@@ -98,9 +111,9 @@
         app.controller('IndexController', ['$scope', '$http', function ($scope, $http) {
             $scope.message = "Welcome to the App. See the most recent products available!";
             $scope.products = [];
-             $http.get("@Url.Action("GetProducts", "Products")").then(function (response) {
-                $scope.products = response.data;
-            })
+             $http.get(`@Url.Action("GetProducts", "Products")?status=0`).then(function (response) {
+             $scope.products = response.data;
+          })
         }]);
         app.controller('UsersController', ['$scope', '$http', function ($scope, $http) {
             $scope.users = [];
@@ -126,20 +139,25 @@
                 userName: '',
                 password: ''
             }
+            $scope.DisplayForm = true;
+            $scope.info = "";
             $scope.message = "";
-            $scope.Register = function () {
-                AuthenticationCheck.IsLogged(function (result) {
-                    if (result) {
-                        $scope.message = "You are already registered";
-                    } else {
-                                       $http.post("@Url.Action("PostUser", "Users")", $scope.user).then(function (response) {
+            AuthenticationCheck.IsLogged(function (result) {
+                if (result) {
+                    $scope.info = "You are already registered";
+                    $scope.DisplayForm = false;
+                }
+
+            })
+            $scope.Save = function () {
+                $http.post("@Url.Action("PostUser", "Users")", $scope.user).then(function (response) {
                     $scope.login = {
                         userName: $scope.user.userName,
                         password: $scope.user.password
                     }
                     AuthenticationService.Login($scope.login, function (result) {
                         if (result) {
-                            $location.path('/Products');
+                            $location.path('/MyAccount');
                         } else {
                             $scope.message = "Something went wrong";
                         }
@@ -147,35 +165,36 @@
                 }, function (error) {
                         $scope.message = error.data;
                 });
-                    }
-                })
 
             }
 
         }])
-        app.controller('LoginController', ['$scope', '$location', 'AuthenticationService', function ($scope, $location, AuthenticationService) {
+        app.controller('LoginController', ['$scope', '$location', 'AuthenticationService', "AuthenticationCheck", function ($scope, $location, AuthenticationService, AuthenticationCheck) {
             $scope.login = {
-                userName: $scope.userName,
-                password: $scope.password
-            }
+                userName: null,
+                password: null
+            };
             $scope.message = "";
+            $scope.IsLogged = true;
+            AuthenticationCheck.IsLogged(function (result) {
+                if (!result) {
+                    $scope.IsLogged = false;
+                }
+            })
             $scope.SignIn = function () {
                 AuthenticationService.Login($scope.login, function (result) {
                     if (result) {
-                        $location.path('/Users');
+                        $location.path('/MyAccount');
                     } else {
                         $scope.message = "Login failed";
                     }
                 })
             }
-            $scope.SignOut = function () {
-                AuthenticationService.Logout();
-                $location.path('/');
-            }
         }]);
         app.controller('AddProductController', ['$http', '$scope', '$location', 'AuthenticationCheck', function ($http, $scope, $location, AuthenticationCheck) {
             $scope.message = "";
-            $scope.PermitSavingProduct;
+            $scope.IsLogged = false;
+            $scope.editMode = false;
             $scope.manufacturers = [];
             $scope.productSubcategories = [];
             $scope.conditions = [
@@ -216,16 +235,23 @@
              })
 
             AuthenticationCheck.IsLogged(function (result) {
-                if (!result) {
-                    $scope.message = "To add a product you should sign in first";
-                    $scope.PermitSavingProduct = true;
+                if (result) {
+                    $scope.IsLogged = true;
                 }
             })
 
             $scope.onChange = function (item, context) {
                 $scope.product[context] = item
             }
-            $scope.product = null;
+            $scope.product = {
+                productName: null,
+                productDescription: null,
+                price: null,
+                location: null,
+                manufacturerId: null,
+                condition: null,
+
+            };
             $scope.Save = function () {
                 $http.post("@Url.Action("PostProduct", "Products")", $scope.product).then(function (response) {
                     $location.path('/MyProducts');
@@ -237,8 +263,10 @@
         app.controller('MyProductsController', ['$scope', '$http', 'AuthenticationCheck', function ($scope, $http, AuthenticationCheck) {
             $scope.message = "";
             $scope.products = [];
+            $scope.IsLogged = false;
             AuthenticationCheck.IsLogged(function (result) {
                 if (result) {
+                    $scope.IsLogged = true;
                     $scope.CurrentUser = JSON.parse(sessionStorage.getItem('current_user'));
                     $http.get(`@Url.Action("GetProducts", "Products")?user=${$scope.CurrentUser.userId}`).then(function (response) {
                          $scope.products = response.data;
@@ -248,18 +276,70 @@
                 }
             })
         }])
-        app.controller('AccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', function ($scope, $http, $location, AuthenticationCheck) {
+        app.controller('AccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', 'AuthenticationService', function ($scope, $http, $location, AuthenticationCheck, AuthenticationService) {
             $scope.message = "";
             $scope.user = null;
+            $scope.IsLogged = false;
             AuthenticationCheck.IsLogged(function (result) {
                 if (result) {
                     $scope.user = JSON.parse(sessionStorage.getItem('current_user'));
+                    $scope.IsLogged = true;
                 } else {
-                    $scope.message = "Login to see your account details";
+                    $scope.message = "Sign in to see your account details";
+                }
+            });
+
+                $scope.Delete = function () {
+                $http.delete(`@Url.Action("GetUsers", "Users")/${$scope.user.userId}`, $scope.user.userId).then(function (response) {
+                    AuthenticationService.Logout();
+                    $scope.user = null;
+                    $scope.message = "Account is deleted";
+                    $scope.IsLogged = false;
+                })
+            }
+            $scope.SignOut = function () {
+                AuthenticationService.Logout();
+                $location.path('/');
+            }
+        }])
+        app.controller('EditAccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', function ($scope, $http, $location, AuthenticationCheck) {
+            $scope.user = null;
+            $scope.DisplayForm = false;
+            $scope.message = "";
+            $scope.info = "";
+            AuthenticationCheck.IsLogged(function (result) {
+                if (result) {
+                    $scope.user = JSON.parse(sessionStorage.getItem('current_user'));
+                    $scope.user.dateOfBirth = new Date($scope.user.dateOfBirth);
+                    $scope.DisplayForm = true;
+                } else {
+                    $scope.info = "To edit account you should sign in first";
                 }
             })
-
-
+            $scope.Save = function () {
+                $http.put(`@Url.Action("GetUsers", "Users")/${$scope.user.userId}`, $scope.user).then(function (response) {
+                    sessionStorage.setItem('current_user', JSON.stringify($scope.user));
+                    $location.path('/MyAccount');
+                },
+                    function (error) {
+                        $scope.message = error.data.title;
+                    }
+                )
+            }
+        }])
+        app.controller('UserDetailsController', ['$scope', '$http','$routeParams', function ($scope, $http, $routeParams) {
+            $scope.user = null;
+            $scope.products = [];
+            $scope.message = "";
+            $http.get(`@Url.Action("GetUsers", "Users")/${$routeParams.UserId}`).then(function (response) {
+                $scope.user = response.data;
+                $http.get(`@Url.Action("GetProducts", "Products")/?user=${$scope.user.userId}`).then(function (response) {
+                    $scope.products = response.data;
+                })
+            },
+            function (error) {
+                $scope.message = error.data;
+            })
         }])
 
     </script>

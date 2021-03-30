@@ -19,6 +19,7 @@ using WAD._8392.DAL.Repositories;
 using WAD._8392.WebApp.DTO;
 using WAD._8392.WebApp.LoginHandling;
 using WAD._8392.WebApp.Conversion;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WAD._8392.WebApp
 {
@@ -52,6 +53,7 @@ namespace WAD._8392.WebApp
                     ValidateAudience = false
                 };
             });
+
             services.AddControllersWithViews();
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
             services.AddScoped<IConverter<User, UserDetails>, UserConverter>();

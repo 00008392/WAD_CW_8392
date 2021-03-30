@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WAD._8392.WebApp.Conversion
 {
-   public interface IMapper<O, D> where O: class
+   public interface IConverter<O, D> where O: class
                                   where D: class
     {
         D ConvertToDTO(O obj);
