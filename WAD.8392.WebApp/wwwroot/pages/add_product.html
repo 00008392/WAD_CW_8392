@@ -22,28 +22,27 @@
             <label>
                 Manufacturer
                 <select ng-options="m as m.manufacturerName for m in manufacturers track by m.manufacturerId" ng-model="manufacturerSelected" ng-change="onChange(manufacturerSelected.manufacturerId, 'manufacturerId')">
-                    <option value="">Please select manufacturer</option>
+                    <option ng-if="!editMode" value="">Please select manufacturer</option>
                 </select>
             </label>
             <label>
                 Subcategory
-                <select ng-options="p as p.subcategoryName for p in productSubcategories track by p.productSubcategoryId" ng-model="categorySeleted" ng-change="onChange(categorySeleted.productSubcategoryId, 'productSubcategoryId')">
-                    <option value="">Please select subcategory</option>
+                <select ng-options="p as p.subcategoryName for p in productSubcategories track by p.productSubcategoryId" ng-model="categorySelected" ng-change="onChange(categorySelected.productSubcategoryId, 'productSubcategoryId')">
+                    <option ng-if="!editMode" value="">Please select subcategory</option>
                 </select>
             </label>
             <label>
                 Condition
                 <select ng-options="c as c.condName for c in conditions track by c.condValue" ng-model="selectedCondition" ng-change="onChange(selectedCondition.condValue, 'condition')">
-                    <option value="">Please select condition</option>
+                    <option ng-if="!editMode" value="">Please select condition</option>
                 </select>
             </label>
             <label ng-if="editMode">
                 Status
                 <select ng-options="s as s.statusName for s in statuses track by s.statusValue" ng-model="selectedStatus" ng-change="onChange(selectedStatus.statusValue, 'status')">
-                    <option value="">Change status</option>
                 </select>
             </label>
-            <input type="button" ng-click="Save()" value="Add product" />
+            <input type="button" ng-click="Save()" value="Save product" />
         </div>
     </div>
 </div>
