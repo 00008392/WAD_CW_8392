@@ -1,31 +1,49 @@
-﻿<p>
-    {{message}}
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <td>Name</td>
-            <td>Description</td>
-            <td>Condition</td>
-            <td>Price</td>
-            <td>Manufacturer</td>
-            <td>Subcategory</td>
-            <td>Location</td>
-            <td>User</td>
-            <td>Date published</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="product in products">
-            <td>{{product.productName}}</td>
-            <td>{{product.productDescription}}</td>
-            <td>{{product.condition}}</td>
-            <td>{{product.price}}</td>
-            <td>{{product.manufacturer.manufacturerName}}</td>
-            <td>{{product.productSubcategory.subcategoryName}}</td>
-            <td>{{product.location}}</td>
-            <td>{{product.owner.userName}}</td>
-            <td>{{product.datePublished}}</td>
-        </tr>
-    </tbody>
-</table>
+﻿<h1>
+    Welcome to MusicSpace! See the most recent products available!
+</h1>
+<div class="products">
+    <div class="products__content" >
+        <a ng-repeat="product in products" href="#!/ProductDetails/{{product.productId}}" class="products__content_item">
+                <div class="item_logo music_logo">{{product.productSubcategory.subcategoryName}}</div>
+                <div class="item__description">
+                    <h2 class="item__title">
+                        {{product.productName}}
+                    </h2>
+                    <h2 class="item__price">
+                        {{product.price}}$
+                    </h2>
+                    <p class="item__details">
+                        Published by: {{product.owner.firstName}} {{product.owner.lastName}} - {{product.datePublished}}
+                    </p>
+                </div>
+        </a>
+    </div>
+    <div class="products__filter">
+        <h3 class="filter__title">Manufacturers</h3>
+        <div class="filter__category">
+            <label ng-repeat="manufacturer in manufacturers" class="input_container">
+                {{manufacturer.manufacturerName}}
+                <input type="radio" ng-model="filterParams.manufacturer" value="{{manufacturer.manufacturerId}}" ng-change="GetProducts()" />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <h3 class="filter__title">Categories</h3>
+        <div class="filter__category">
+            <label ng-repeat="category in categories" class="input_container">
+                {{category.categoryName}}
+                <input type="radio" ng-model="filterParams.category" value="{{category.productCategoryId}}" ng-change="GetProductsFromCategory()" />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <h3 class="filter__title">Subcategories</h3>
+        <div class="filter__category">
+            <label ng-repeat="subcategory in subcategories" class="input_container">
+                {{subcategory.subcategoryName}}
+                <input type="radio" ng-model="filterParams.subcategory" value="{{subcategory.productSubcategoryId}}" ng-change="GetProducts()" />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+            <input type="button" class="button" value="Clear filters" ng-click="Clear()" />
+        </div>
+    </div>
+

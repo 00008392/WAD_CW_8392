@@ -6,9 +6,11 @@
     <div ng-view>
 
     </div>
+
 </div>
 
 @section Scripts {
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js" type="text/javascript"></script>
     <script src="https://code.angularjs.org/1.8.2/angular-route.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js" type="text/javascript"></script>
@@ -19,7 +21,7 @@
             $routeProvider
                 .when('/', {
                     templateUrl: 'pages/index.html',
-                    controller: 'IndexController'
+                    controller: 'ProductListController'
                 })
                 .when('/Users', {
                     templateUrl: 'pages/users.html',
@@ -56,6 +58,10 @@
                 .when('/UserDetails/:UserId', {
                     templateUrl: 'pages/user_details.html',
                     controller: 'UserDetailsController'
+                })
+                .when('/ProductDetails/:ProductId', {
+                    templateUrl: 'pages/product_details.html',
+                    controller: 'ProductDetailsController'
                 })
                 .otherwise({
                     redirectTo: '/'
@@ -100,12 +106,56 @@
             }
             return service;
         }])
-        app.controller('IndexController', ['$scope', '$http', function ($scope, $http) {
-            $scope.message = "Welcome to the App. See the most recent products available!";
+        app.controller('ProductListController', ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
             $scope.products = [];
-             $http.get(`@Url.Action("GetProducts", "Products")?status=0`).then(function (response) {
-             $scope.products = response.data;
-          })
+            $scope.subcategories = [];
+            $scope.categories = [];
+            $scope.filterParams = {
+                manufacturer: null,
+                subcategory: null,
+                category: null
+            }
+
+            $scope.manufactuers = [];
+            $http.get(`@Url.Action("GetManufacturers", "Manufacturers")`).then(function (response) {
+            $scope.manufacturers = response.data;
+            })
+             $http.get(`@Url.Action("GetProductCategories", "ProductCategories")`).then(function (response) {
+             $scope.categories = response.data;
+             })
+            $scope.GetProducts = function () {
+
+                $http.get(`@Url.Action("GetProductSubcategories", "ProductSubcategories")?${$scope.filterParams.category == null ? '' : `&category=${$scope.filterParams.category}`}`).then(function (response) {
+                    $scope.subcategories = response.data;
+                })
+
+                var queryString = $scope.filterParams.manufacturer == null ? '' : `manufacturer=${$scope.filterParams.manufacturer}`;
+                $scope.filterParams.category == null ? queryString += '' : queryString += `&category=${$scope.filterParams.category}`;
+                $scope.filterParams.subcategory == null ? queryString += '' : queryString += `&subcategory=${$scope.filterParams.subcategory}`;
+                $http.get(`@Url.Action("GetProducts", "Products")?status=0&${queryString}`).then(function (response) {
+                    $scope.products = response.data;
+                    $scope.products.forEach(function (product) {
+                        var date = new Date(product.datePublished);
+                        var year = date.getFullYear();
+                        var month = date.getMonth();
+                        var day = date.getDate();
+                        product.datePublished = `${day}/${month + 1}/${year}`;
+                    })
+             })
+            }
+            $scope.GetProducts();
+            $scope.GetProductsFromCategory = function () {
+                $scope.filterParams.subcategory = null;
+                $scope.GetProducts();
+            }
+            $scope.Clear = function () {
+                $scope.filterParams = {
+                    manufacturer: null,
+                    subcategory: null,
+                    category: null
+                }
+                $scope.GetProducts();
+            }
         }]);
         app.controller('UsersController', ['$scope', '$http', function ($scope, $http) {
             $scope.users = [];
@@ -406,6 +456,15 @@
                 )
             }
         }])
-
+           app.controller('ProductDetailsController', ['$scope', '$http','$routeParams', function ($scope, $http, $routeParams) {
+            $scope.product = null;
+            $scope.message = "";
+            $http.get(`@Url.Action("GetProducts", "Products")/${$routeParams.ProductId}`).then(function (response) {
+                $scope.product = response.data;
+            },
+            function (error) {
+                $scope.message = error.data;
+            })
+        }])
     </script>
 }

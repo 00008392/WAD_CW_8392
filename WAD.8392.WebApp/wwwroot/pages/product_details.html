@@ -1,0 +1,20 @@
+﻿<p>{{message}}</p>
+<div class="product__details">
+    <div class="products__content_item details">
+        <h2 class="product__details_title">Product</h2>
+        <p><span>Name: </span> {{product.productName}}</p>
+        <p><span>Description: </span> {{product.description}}</p>
+        <p><span>Condition: </span> {{product.condition}}</p>
+        <p><span>Price: </span> {{product.price}}$</p>
+        <p><span>Status: </span> {{product.status}}</p>
+        <p><span>Location: </span> {{product.location}}</p>
+        <p><span>Date published: </span> {{product.datePublished}}</p>
+        <p><span>Manufacturer: </span> {{product.manufacturer.manufacturerName}}</p>
+        <p><span>Subcategory: </span> {{product.productSubcategory.subcategoryName}}</p>
+        <p><span>Category: </span> {{product.productSubcategory.productCategory.categoryName}}</p>
+
+    </div>
+    <div class="products__content_item details">
+        <h2 class="product__details_title">Owner</h2>
+    </div>
+</div>

@@ -21,11 +21,11 @@ namespace WAD._8392.WebApp.Controllers
         {
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories(int? id)
+        public async Task<ActionResult<IEnumerable<ProductSubcategory>>> GetProductSubcategories(int? category)
         {
             var subcategories = await _repository.GetAllAsync();
 
-                var result = subcategories.Where(s => id==null||s.ProductCategoryId==id);
+                var result = subcategories.Where(s => category == null||s.ProductCategoryId== category);
                 return Ok(result);
         }
 

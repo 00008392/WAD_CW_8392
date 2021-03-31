@@ -11,5 +11,6 @@ namespace WAD._8392.WebApp.QueryParameters
         public int? User { get; set; }
         public int? Subcategory { get; set; }
         public int? Status { get; set; }
+        public int? Category { get; set; }
     }
 }

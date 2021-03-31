@@ -30,8 +30,10 @@ namespace WAD._8392.WebApp.Controllers
            var products = await _repository.GetAllAsync();
             var result = products.Where(p => (parameter.Manufacturer == null || p.ManufacturerId == parameter.Manufacturer)
             && (parameter.User == null || p.UserId == parameter.User)
+            && (parameter.Category==null||p.ProductSubcategory.ProductCategoryId==parameter.Category)
             && (parameter.Subcategory == null || p.ProductSubcategoryId == parameter.Subcategory)
-            && (parameter.Status==null || (int)p.Status==parameter.Status))
+            && (parameter.Status==null || (int)p.Status==parameter.Status)
+            )
             .OrderByDescending(p=>p.DatePublished); 
             return Ok(result);
         }
