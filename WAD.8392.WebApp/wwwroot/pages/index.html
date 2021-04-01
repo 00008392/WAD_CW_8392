@@ -3,20 +3,22 @@
 </h1>
 <div class="products">
     <div class="products__content" >
-        <a ng-repeat="product in products" href="#!/ProductDetails/{{product.productId}}" class="products__content_item">
+        <div ng-repeat="product in products" class="products__content_item">
+            <div class="item__description">
                 <div class="item_logo music_logo">{{product.productSubcategory.subcategoryName}}</div>
-                <div class="item__description">
-                    <h2 class="item__title">
-                        {{product.productName}}
-                    </h2>
-                    <h2 class="item__price">
-                        {{product.price}}$
-                    </h2>
-                    <p class="item__details">
-                        Published by: {{product.owner.firstName}} {{product.owner.lastName}} - {{product.datePublished}}
-                    </p>
-                </div>
-        </a>
+                <h2 class="item__title">
+                    {{product.productName}}
+                </h2>
+                <h2 class="item__price">
+                    {{product.price}}$
+                </h2>
+                <p class="item__details">
+                    Published by: {{product.owner.firstName}} {{product.owner.lastName}} - {{product.datePublished}}
+                </p>
+
+            </div>
+            <a class="button" href="#!/ProductDetails/{{product.productId}}">See details</a>
+        </div>
     </div>
     <div class="products__filter">
         <h3 class="filter__title">Manufacturers</h3>

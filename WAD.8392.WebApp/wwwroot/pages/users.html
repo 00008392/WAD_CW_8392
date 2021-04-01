@@ -1,24 +1,13 @@
 ﻿
-<table class="table">
-    <thead>
-        <tr>
-            <td>First name</td>
-            <td>Last name</td>
-            <td>Birthday</td>
-            <td>Contact number</td>
-            <td>Username</td>
-            <td>Email</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="user in users">
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
-            <td>{{user.dateOfBirth}}</td>
-            <td>{{user.phoneNumber}}</td>
-            <td>{{user.userName}}</td>
-            <td>{{user.email}}</td>
-            <td><a href="#!/UserDetails/{{user.userId}}">View details</a></td>
-        </tr>
-    </tbody>
-</table>
+<div class="users__list">
+    <div class="user__item products__content_item" ng-repeat="user in users">
+        <div>
+            <h2 class="title">{{user.firstName}} {{user.lastName}}</h2>
+            <p class="item__details">{{user.userName}}</p>
+            <p class="item__details">{{user.email}}</p>
+            <p class="item__details">Phone: {{user.phoneNumber}}</p>
+        </div>
+
+            <a class="button mb-0" href="#!/UserDetails/{{user.userId}}">See details</a>
+    </div>
+</div>

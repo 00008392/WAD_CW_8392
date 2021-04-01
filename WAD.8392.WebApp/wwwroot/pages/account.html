@@ -1,40 +1,24 @@
-﻿<p>{{message}}</p>
-<div ng-if="IsLogged">
-    <h1>Hello, {{user.userName}}!</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <td>First name</td>
-                <td>Last name</td>
-                <td>Birthday</td>
-                <td>Contact number</td>
-                <td>Username</td>
-                <td>Email</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{user.firstName}}</td>
-                <td>{{user.lastName}}</td>
-                <td>{{user.dateOfBirth}}</td>
-                <td>{{user.phoneNumber}}</td>
-                <td>{{user.userName}}</td>
-                <td>{{user.email}}</td>
-            </tr>
-        </tbody>
-    </table>
-    <input type="button" class="btn-primary" value="Sign out" ng-click="SignOut()" />
-    <a href="#!/MyProducts">My products</a>
-    <input type="button" data-toggle="modal" data-target="#deleteAccountModal" class="btn-danger" value="Delete account" />
-    <a href="#!/EditAccount">Edit</a>
-
+﻿<h2 class="item__text">{{message}}</h2>
+<div class="d-flex flex-column align-items-center" ng-if="IsLogged">
+    <div class="products__content_item user__details details col-lg-6">
+        <h2 class="product__details_title">{{user.firstName}} {{user.lastName}}</h2>
+        <p class="item__text"><span>Birthday:</span> {{user.dateOfBirth}}</p>
+        <p class="item__text"><span>Email:</span> {{user.email}}</p>
+        <p class="item__text"><span>Username:</span> {{user.userName}}</p>
+        <p class="item__text"><span>Phone number:</span> {{user.phoneNumber}}</p>
+        <div class="user_details">
+            <input type="button" class="button" value="Sign out" ng-click="SignOut()" />
+            <input type="button" data-toggle="modal" data-target="#deleteAccountModal" class="button btn-danger" value="Delete account" />
+            <a class="button" href="#!/EditAccount">Edit account</a>
+            <a class="button" href="#!/MyProducts">See my products</a>
+        </div>
+    </div>
 </div>
-
-<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="deleteAccountModalLabel">Account deletion</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -1,18 +1,12 @@
-﻿<p ng-if="IsLogged">You are already signed in</p>
+﻿<h2 class="title" ng-if="IsLogged">You are already signed in</h2>
 <div ng-if="!IsLogged" class="container">
     <div class="row justify-content-center">
-        <div class="col-5">
-            <p>{{message}}</p>
-            <label>
-                Username
-                <input type="text" ng-model="login.userName" />
-            </label>
-            <label>
-                Password
-                <input type="password" ng-model="login.password" />
-              
-            </label>
-            <input type="button" ng-click="SignIn()" />
+        <div class="col-md-5 form">
+            <h2 class="title">Sign in</h2>
+            <p class="item__text font-weight-bold">{{message}}</p>
+                <input type="text" placeholder="Username" class="input" ng-model="login.userName" />
+                <input type="password" placeholder="Password" class="input" ng-model="login.password" />
+            <input type="button" value="Sign in" class="button" ng-click="SignIn()" />
         </div>
     </div>
 </div>

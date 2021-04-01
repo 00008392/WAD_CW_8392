@@ -12,7 +12,7 @@ using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
-    [Route("api/subcategories")]
+    [Route("api/Subcategories")]
     [ApiController]
     public class ProductSubcategoriesController : GenericController<ProductSubcategory>
     {

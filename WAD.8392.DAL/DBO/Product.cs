@@ -22,6 +22,7 @@ namespace WAD._8392.DAL.DBO
         [Required]
         public Condition Condition { get; set; }
         [Required]
+        [Range(0, double.MaxValue)]
         public decimal Price { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Status Status { get; set; } 

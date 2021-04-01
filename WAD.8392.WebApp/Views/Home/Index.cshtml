@@ -11,12 +11,9 @@
 
 @section Scripts {
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js" type="text/javascript"></script>
-    <script src="https://code.angularjs.org/1.8.2/angular-route.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js" type="text/javascript"></script>
+   
     <script type="text/javascript">
-
-        var app = angular.module('MusicInstrumentsSpa', ['ngRoute', 'ngStorage']);
+        @*var app = angular.module('MusicInstrumentsSpa', ['ngRoute', 'ngStorage']);
         app.config(function ($routeProvider) {
             $routeProvider
                 .when('/', {
@@ -28,7 +25,7 @@
                     controller: 'UsersController'
                 })
                 .when('/SignUp', {
-                    templateUrl: 'pages/registration.html',
+                    templateUrl: 'pages/save_user.html',
                     controller: 'RegisterController'
                 })
                 .when('/SignIn', {
@@ -36,11 +33,11 @@
                     controller: 'LoginController'
                 })
                 .when('/AddProduct', {
-                    templateUrl: 'pages/add_product.html',
+                    templateUrl: 'pages/save_product.html',
                     controller: 'AddProductController'
                 })
                 .when('/EditProduct/:ProductId', {
-                    templateUrl: 'pages/add_product.html',
+                    templateUrl: 'pages/save_product.html',
                     controller: 'EditProductController'
                 })
                 .when('/MyProducts', {
@@ -52,7 +49,7 @@
                     controller: 'AccountController'
                 })
                 .when('/EditAccount', {
-                    templateUrl: 'pages/registration.html',
+                    templateUrl: 'pages/save_user.html',
                     controller: 'EditAccountController'
                 })
                 .when('/UserDetails/:UserId', {
@@ -67,17 +64,20 @@
                     redirectTo: '/'
                 })
         });
-        app.service('AuthenticationCheck', function () {
+        app.service('AuthenticationCheck', ['$http',function ($http) {
             var service = {};
             service.IsLogged = function (callback) {
                 if (sessionStorage.getItem('current_user')) {
+                    if (!$http.defaults.headers.common.Authorization) {
+                        $http.defaults.headers.common.Authorization = 'Bearer ' + sessionStorage.getItem('token');
+                    }
                      callback(true);
                 } else {
                      callback(false);
                 }
             }
             return service;
-        });
+        }]);
         app.service('AuthenticationService', ['$http', 'AuthenticationCheck', function ($http, AuthenticationCheck) {
             var service = {};
             service.Login = function (login, callback) {
@@ -87,8 +87,8 @@
                     } else {
                         $http.post("@Url.Action("Authenticate", "Authenticate")", login).then(
                             function (response) {
-                                 sessionStorage.setItem('token', response.data);
-                                 $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
+                                sessionStorage.setItem('token', response.data);
+                                $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
                                 $http.get("@Url.Action("GetLoggedUser", "Users")").then(function (response) {
                                     sessionStorage.setItem('current_user', JSON.stringify(response.data));
                                     callback(true);
@@ -106,7 +106,18 @@
             }
             return service;
         }])
-        app.controller('ProductListController', ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+        app.service('DateConversion', [function () {
+            var service = {};
+            service.ConvertDate = function (date) {
+                var date = new Date(date);
+                var year = date.getFullYear();
+                var month = date.getMonth();
+                var day = date.getDate();
+                 return  `${day}/${month + 1}/${year}`;
+            }
+            return service;
+        }])
+        app.controller('ProductListController', ['$scope', '$http','DateConversion' , function ($scope, $http, DateConversion) {
             $scope.products = [];
             $scope.subcategories = [];
             $scope.categories = [];
@@ -135,11 +146,7 @@
                 $http.get(`@Url.Action("GetProducts", "Products")?status=0&${queryString}`).then(function (response) {
                     $scope.products = response.data;
                     $scope.products.forEach(function (product) {
-                        var date = new Date(product.datePublished);
-                        var year = date.getFullYear();
-                        var month = date.getMonth();
-                        var day = date.getDate();
-                        product.datePublished = `${day}/${month + 1}/${year}`;
+                        product.datePublished = DateConversion.ConvertDate(product.datePublished);
                     })
              })
             }
@@ -157,16 +164,12 @@
                 $scope.GetProducts();
             }
         }]);
-        app.controller('UsersController', ['$scope', '$http', function ($scope, $http) {
+        app.controller('UsersController', ['$scope', '$http','DateConversion',function ($scope, $http, DateConversion) {
             $scope.users = [];
             $http.get("@Url.Action("GetUsers", "Users")").then(function (response) {
                 $scope.users = response.data;
                 $scope.users.forEach(function (user) {
-                    var date = new Date(user.dateOfBirth);
-                    var year = date.getFullYear();
-                    var month = date.getMonth();
-                    var day = date.getDate();
-                    user.dateOfBirth = `${day}/${month + 1}/${year}`;
+                    user.dateOfBirth = DateConversion.ConvertDate(user.dateOfBirth);
                 })
             })
         }]);
@@ -181,6 +184,7 @@
                 userName: '',
                 password: ''
             }
+            $scope.mode = "Register";
             $scope.DisplayForm = true;
             $scope.info = "";
             $scope.message = "";
@@ -291,39 +295,45 @@
                 $http.post("@Url.Action("PostProduct", "Products")", $scope.product).then(function (response) {
                     $location.path('/MyProducts');
                 }, function (error) {
-                        $scope.message = error.data;
+                        $scope.message = error.data.title;
                 })
             }
         }])
-        app.controller('MyProductsController', ['$scope', '$http', 'AuthenticationCheck', function ($scope, $http, AuthenticationCheck) {
+        app.controller('MyProductsController', ['$scope', '$http', 'AuthenticationCheck', 'DateConversion',function ($scope, $http, AuthenticationCheck, DateConversion) {
             $scope.message = "";
             $scope.products = [];
             $scope.IsLogged = false;
+            $scope.deleted = false;
             AuthenticationCheck.IsLogged(function (result) {
                 if (result) {
                     $scope.IsLogged = true;
                     $scope.CurrentUser = JSON.parse(sessionStorage.getItem('current_user'));
                     $http.get(`@Url.Action("GetProducts", "Products")?user=${$scope.CurrentUser.userId}`).then(function (response) {
-                         $scope.products = response.data;
+                        $scope.products = response.data;
+                        $scope.products.forEach(product => {
+                            product.datePublished = DateConversion.ConvertDate(product.datePublished);
+                        })
                     })
                 } else {
-                    $scope.message = "Login to see your products";
+                    $scope.message = "Sign in to see your products";
                 }
             })
               $scope.Delete = function (product) {
                   $http.delete(`@Url.Action("GetProducts", "Products")/${product.productId}`).then(function (response) {
+                      $scope.deleted = true;
                       var index = $scope.products.indexOf(product);
                       $scope.products.splice(index, 1);
                 })
             }
         }])
-        app.controller('AccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', 'AuthenticationService', function ($scope, $http, $location, AuthenticationCheck, AuthenticationService) {
+        app.controller('AccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', 'AuthenticationService', 'DateConversion', function ($scope, $http, $location, AuthenticationCheck, AuthenticationService, DateConversion) {
             $scope.message = "";
             $scope.user = null;
             $scope.IsLogged = false;
             AuthenticationCheck.IsLogged(function (result) {
                 if (result) {
                     $scope.user = JSON.parse(sessionStorage.getItem('current_user'));
+                    $scope.user.dateOfBirth = DateConversion.ConvertDate($scope.user.dateOfBirth);
                     $scope.IsLogged = true;
                 } else {
                     $scope.message = "Sign in to see your account details";
@@ -347,6 +357,7 @@
             $scope.DisplayForm = false;
             $scope.message = "";
             $scope.info = "";
+            $scope.mode = "Modify";
             AuthenticationCheck.IsLogged(function (result) {
                 if (result) {
                     $scope.user = JSON.parse(sessionStorage.getItem('current_user'));
@@ -367,18 +378,22 @@
                 )
             }
         }])
-        app.controller('UserDetailsController', ['$scope', '$http','$routeParams', function ($scope, $http, $routeParams) {
+        app.controller('UserDetailsController', ['$scope', '$http','$routeParams', 'DateConversion',function ($scope, $http, $routeParams, DateConversion) {
             $scope.user = null;
             $scope.products = [];
             $scope.message = "";
             $http.get(`@Url.Action("GetUsers", "Users")/${$routeParams.UserId}`).then(function (response) {
                 $scope.user = response.data;
-                $http.get(`@Url.Action("GetProducts", "Products")/?user=${$scope.user.userId}`).then(function (response) {
+                $scope.user.dateOfBirth = DateConversion.ConvertDate($scope.user.dateOfBirth);
+                $http.get(`@Url.Action("GetProducts", "Products")?user=${$scope.user.userId}`).then(function (response) {
                     $scope.products = response.data;
+                    $scope.products.forEach(product => {
+                        product.datePublished = DateConversion.ConvertDate(product.datePublished);
+                    })
                 })
             },
             function (error) {
-                $scope.message = error.data;
+                $scope.message = error.data.title;
             })
         }])
         app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$location', 'AuthenticationCheck', function ($scope, $http, $routeParams, $location, AuthenticationCheck) {
@@ -456,15 +471,16 @@
                 )
             }
         }])
-           app.controller('ProductDetailsController', ['$scope', '$http','$routeParams', function ($scope, $http, $routeParams) {
+           app.controller('ProductDetailsController', ['$scope', '$http','$routeParams','DateConversion', function ($scope, $http, $routeParams, DateConversion) {
             $scope.product = null;
             $scope.message = "";
             $http.get(`@Url.Action("GetProducts", "Products")/${$routeParams.ProductId}`).then(function (response) {
                 $scope.product = response.data;
+                $scope.product.datePublished = DateConversion.ConvertDate($scope.product.datePublished);
             },
             function (error) {
-                $scope.message = error.data;
+                $scope.message = error.data.title;
             })
-        }])
+           }])*@
     </script>
 }

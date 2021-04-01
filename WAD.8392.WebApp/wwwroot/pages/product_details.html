@@ -1,20 +1,31 @@
-﻿<p>{{message}}</p>
-<div class="product__details">
+﻿<h2 class="item__text"> {{message}}</h2>
+<div class="product__details" ng-if="product">
     <div class="products__content_item details">
         <h2 class="product__details_title">Product</h2>
-        <p><span>Name: </span> {{product.productName}}</p>
-        <p><span>Description: </span> {{product.description}}</p>
-        <p><span>Condition: </span> {{product.condition}}</p>
-        <p><span>Price: </span> {{product.price}}$</p>
-        <p><span>Status: </span> {{product.status}}</p>
-        <p><span>Location: </span> {{product.location}}</p>
-        <p><span>Date published: </span> {{product.datePublished}}</p>
-        <p><span>Manufacturer: </span> {{product.manufacturer.manufacturerName}}</p>
-        <p><span>Subcategory: </span> {{product.productSubcategory.subcategoryName}}</p>
-        <p><span>Category: </span> {{product.productSubcategory.productCategory.categoryName}}</p>
+        <p class="item__text"><span>Description: </span> {{product.productDescription}}</p>
+        <p class="item__text"><span>Name: </span> {{product.productName}}</p>
+        <p class="item__text"><span>Condition: </span> {{product.condition}}</p>
+        <p class="item__text"><span>Price: </span> {{product.price}}$</p>
+        <p class="item__text"><span>Status: </span> {{product.status}}</p>
+        <p class="item__text"><span>Location: </span> {{product.location}}</p>
+        <p class="item__text"><span>Date published: </span> {{product.datePublished}}</p>
+        <p class="item__text"><span>Manufacturer: </span> {{product.manufacturer.manufacturerName}}</p>
+        <p class="item__text"><span>Subcategory: </span> {{product.productSubcategory.subcategoryName}}</p>
+        <p class="item__text"><span>Category: </span> {{product.productSubcategory.productCategory.categoryName}}</p>
 
     </div>
     <div class="products__content_item details">
-        <h2 class="product__details_title">Owner</h2>
+        <div>
+            <h2 class="product__details_title">Owner</h2>
+            <p class="item__text"><span>Name:</span> {{product.owner.firstName}} {{product.owner.lastName}}</p>
+            <p class="item__text"><span>Email:</span> {{product.owner.email}}</p>
+            <p class="item__text"><span>Phone number:</span> {{product.owner.phoneNumber}}</p>
+        </div>
+
+        <div class="user_details">
+            <a class="button" href="tel:{{product.owner.phoneNumber}}">Call</a>
+            <a class="button" href="mailto:{{product.owner.email}}">Email</a>
+            <a class="button" href="#!/UserDetails/{{product.owner.userId}}">See details</a>
+        </div>
     </div>
 </div>
