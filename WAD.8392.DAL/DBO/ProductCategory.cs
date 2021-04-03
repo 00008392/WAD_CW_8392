@@ -10,8 +10,8 @@ namespace WAD._8392.DAL.DBO
     public class ProductCategory
     {
         public int ProductCategoryId { get; set; }
-        [Required]
-        [MinLength(3)]
+        [Required(ErrorMessage ="Category name is required")]
+        [MinLength(3, ErrorMessage ="Category name should have at least 3 characters")]
         public string CategoryName { get; set; }
         [JsonIgnore]
         public virtual ICollection<ProductSubcategory> ProductSubcategories { get; set; }

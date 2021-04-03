@@ -10,8 +10,8 @@ namespace WAD._8392.DAL.DBO
     public class ProductSubcategory
     {
         public int ProductSubcategoryId { get; set; }
-        [Required]
-        [MinLength(3)]
+        [Required(ErrorMessage ="Subcategory name is required")]
+        [MinLength(3, ErrorMessage ="Subcategory name should have at least 3 characters")]
         public string SubcategoryName { get; set; }
         public int? ProductCategoryId { get; set; }
         public virtual ProductCategory ProductCategory { get; set; }

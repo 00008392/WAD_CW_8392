@@ -16,7 +16,13 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ManufacturersController : GenericController<Manufacturer>
     {
-
+        //controller for handling manufacturers
+        //note: methods of adding/updating/deleting manufacturers are not included in the client application,
+        //since it would not make sense if any user registered in the system would be able to change this information
+        //logic for these methods is not fully implemented in this controller as well
+        //proper logic would be to allow admins to do that, but it was decided not to include this functionality in the application for now,
+        //maybe in the future it will be added
+        //that is why, database was already populated with sufficient number of manufacturers
         public ManufacturersController(IRepository<Manufacturer> repository):base(repository)
         {
         }
@@ -34,7 +40,6 @@ namespace WAD._8392.WebApp.Controllers
         {
             var manufacturer = await _repository.GetByIdAsync(id);
 
-
             if (manufacturer == null)
             {
                 return NotFound();
@@ -49,15 +54,14 @@ namespace WAD._8392.WebApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutManufacturer(int id, Manufacturer manufacturer)
         {
-            if (id != manufacturer.ManufacturerId)
-            {
-                return BadRequest();
-            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
+            if (id != manufacturer.ManufacturerId)
+            {
+                return BadRequest();
+            }
 
             try
             {

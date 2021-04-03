@@ -1,10 +1,10 @@
-﻿app.controller('AccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', 'AuthenticationService', 'DateConversion', function ($scope, $http, $location, AuthenticationCheck, AuthenticationService, DateConversion) {
+﻿app.controller('AccountController', ['$scope', '$http', '$location', 'AuthenticationService', 'DateConversion', function ($scope, $http, $location, AuthenticationService, DateConversion) {
     $scope.message = "";
-    $scope.user = null;
+    $scope.user = {};
     $scope.IsLogged = false;
-    AuthenticationCheck.IsLogged(function (result) {
+    AuthenticationService.IsLogged(function (result) {
         if (result) {
-            $scope.user = JSON.parse(sessionStorage.getItem('current_user'));
+            $scope.user = AuthenticationService.getCurrentUser();
             $scope.user.dateOfBirth = DateConversion.ConvertDate($scope.user.dateOfBirth);
             $scope.IsLogged = true;
         } else {

@@ -10,6 +10,8 @@ namespace WAD._8392.WebApp.Conversion
 {
     public class UserConverter : IConverter<User, UserDetails>
     {
+        //concrete converter
+        //converting user to UserDetails to hide password 
         public UserDetails ConvertToDTO(User obj)
         {
             var result = new UserDetails

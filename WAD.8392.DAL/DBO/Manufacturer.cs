@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace WAD._8392.DAL.DBO
 {
+    //music instruments manufacturer
     public class Manufacturer
     {
         public int ManufacturerId { get; set; }
-        [Required]
-        [MinLength(3)]
+        [Required(ErrorMessage ="Manufacturer name is required")]
         public string ManufacturerName { get; set; }
         [JsonIgnore]
         public virtual ICollection<Product> Products { get; set; }

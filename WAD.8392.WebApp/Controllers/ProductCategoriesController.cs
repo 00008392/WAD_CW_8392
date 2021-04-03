@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +15,14 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ProductCategoriesController : GenericController<ProductCategory>
     {
-
-        public ProductCategoriesController(IRepository<ProductCategory> repository):base(repository)
+        //controller for handling product categories
+        //note: methods of adding/updating/deleting categories are not included in the client application,
+        //since it would not make sense if any user registered in the system would be able to change this information
+        //logic for these methods is not fully implemented in this controller as well
+        //proper logic would be to allow admins to do that, but it was decided not to include this functionality in the application for now,
+        //maybe in the future it will be added
+        //that is why, database was already populated with sufficient number of categories
+        public ProductCategoriesController(IRepository<ProductCategory> repository) : base(repository)
         {
         }
 
@@ -27,7 +32,7 @@ namespace WAD._8392.WebApp.Controllers
             return await _repository.GetAllAsync();
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
             var productCategory = await _repository.GetByIdAsync(id);
@@ -40,21 +45,17 @@ namespace WAD._8392.WebApp.Controllers
             return productCategory;
         }
 
-
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
-        [HttpPut("/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutProductCategory(int id, ProductCategory productCategory)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (id != productCategory.ProductCategoryId)
             {
                 return BadRequest();
             }
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-          
 
             try
             {
@@ -75,22 +76,19 @@ namespace WAD._8392.WebApp.Controllers
             return NoContent();
         }
 
-
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ProductCategory>> PostProductCategory(ProductCategory productCategory)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             await _repository.AddAsync(productCategory);
 
-            return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
+            return CreatedAtAction("GetManufacturer", new { id = productCategory.ProductCategoryId }, productCategory);
         }
-        [Authorize]
-        [HttpDelete("/{id}")]
+
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {
             var productCategory = await _repository.GetByIdAsync(id);
@@ -104,6 +102,5 @@ namespace WAD._8392.WebApp.Controllers
             return NoContent();
         }
 
-     
     }
 }

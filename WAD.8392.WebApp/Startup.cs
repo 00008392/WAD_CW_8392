@@ -35,6 +35,7 @@ namespace WAD._8392.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //authenticatoin settings
             var key = AuthOptions.TokenKey();
             services.AddAuthentication(x =>
             {
@@ -53,15 +54,23 @@ namespace WAD._8392.WebApp
                     ValidateAudience = false
                 };
             });
-
+            //disable automatic model validation to show custom errors properly
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
             services.AddControllersWithViews();
+            //authentication service for injection in controller
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            //DTO converter service for injection in controller
             services.AddScoped<IConverter<User, UserDetails>, UserConverter>();
+            //repositories for injection in controller
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<Product>, ProductRepository>();
             services.AddScoped<IRepository<Manufacturer>, ManufacturerRepository>();
             services.AddScoped<IRepository<ProductCategory>, ProductCategoryRepository>();
             services.AddScoped<IRepository<ProductSubcategory>, ProductSubcategoryRepository>();
+            //db context for injection in repositories
             services.AddDbContext<MusicInstrumentsDbContext>(options =>
           options.UseSqlServer(Configuration.GetConnectionString("MusicInstrumentsDbContext")));
 

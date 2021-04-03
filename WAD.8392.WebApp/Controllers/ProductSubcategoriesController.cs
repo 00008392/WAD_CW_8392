@@ -16,7 +16,13 @@ namespace WAD._8392.WebApp.Controllers
     [ApiController]
     public class ProductSubcategoriesController : GenericController<ProductSubcategory>
     {
-
+        //controller for handling subategories
+        //note: methods of adding/updating/deleting subategories are not included in the client application,
+        //since it would not make sense if any user registered in the system would be able to change this information
+        //logic for these methods is not fully implemented in this controller as well
+        //proper logic would be to allow admins to do that, but it was decided not to include this functionality in the application for now,
+        //maybe in the future it will be added
+        //that is why, database was already populated with sufficient number of subategories
         public ProductSubcategoriesController(IRepository<ProductSubcategory> repository):base(repository)
         {
         }
@@ -43,7 +49,7 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        //[Authorize]
         [HttpPut("/{id}")]
         public async Task<IActionResult> PutProductSubcategory(int id, ProductSubcategory productSubcategory)
         {

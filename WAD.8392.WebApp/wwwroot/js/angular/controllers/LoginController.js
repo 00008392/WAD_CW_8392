@@ -1,11 +1,11 @@
-﻿app.controller('LoginController', ['$scope', '$location', 'AuthenticationService', "AuthenticationCheck", function ($scope, $location, AuthenticationService, AuthenticationCheck) {
+﻿app.controller('LoginController', ['$scope', '$location', 'AuthenticationService', function ($scope, $location, AuthenticationService) {
     $scope.login = {
         userName: null,
         password: null
     };
     $scope.message = "";
     $scope.IsLogged = false;
-    AuthenticationCheck.IsLogged(function (result) {
+    AuthenticationService.IsLogged(function (result) {
         if (result) {
             $scope.IsLogged = true;
         }

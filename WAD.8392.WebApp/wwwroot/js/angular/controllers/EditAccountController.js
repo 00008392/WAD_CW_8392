@@ -1,12 +1,12 @@
-﻿app.controller('EditAccountController', ['$scope', '$http', '$location', 'AuthenticationCheck', function ($scope, $http, $location, AuthenticationCheck) {
-    $scope.user = null;
+﻿app.controller('EditAccountController', ['$scope', '$http', '$location', 'AuthenticationService', function ($scope, $http, $location, AuthenticationService) {
+    $scope.user = {};
     $scope.DisplayForm = false;
     $scope.message = "";
     $scope.info = "";
     $scope.mode = "Modify";
-    AuthenticationCheck.IsLogged(function (result) {
+    AuthenticationService.IsLogged(function (result) {
         if (result) {
-            $scope.user = JSON.parse(sessionStorage.getItem('current_user'));
+            $scope.user = AuthenticationService.getCurrentUser();
             $scope.user.dateOfBirth = new Date($scope.user.dateOfBirth);
             $scope.DisplayForm = true;
         } else {
@@ -15,12 +15,13 @@
     })
     $scope.Save = function () {
         $http.put(`api/Users/${$scope.user.userId}`, $scope.user).then(function (response) {
-            sessionStorage.setItem('current_user', JSON.stringify($scope.user));
+            AuthenticationService.setCurrentUser($scope.user);
             $location.path('/MyAccount');
         },
             function (error) {
-                $scope.message = error.data.title;
+                $scope.message = error.data;
             }
         )
     }
+
 }])

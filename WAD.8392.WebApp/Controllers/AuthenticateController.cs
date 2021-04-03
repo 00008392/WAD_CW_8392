@@ -5,29 +5,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using WAD._8392.WebApp.LoginHandling;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WAD._8392.WebApp.Controllers
 {
     [Route("api/authentication")]
     [ApiController]
+    //controller that handles authentication
     public class AuthenticateController : ControllerBase
     {
+        //service for generating JWT
         private readonly IAuthenticationManager _authenticationManager;
 
         public AuthenticateController(IAuthenticationManager authenticationManager)
         {
             _authenticationManager = authenticationManager;
         }
-
+        //api endpoint for authentication
         [HttpPost]
         public async Task<IActionResult> Authenticate([FromBody] Login login)
         {
+            //getting token based on credentials
             var token = await _authenticationManager.Authenticate(login.UserName, login.Password);
-
+            //if token is null, it means that credentials are not correct
             if (token == null)
                 return Unauthorized();
-
+            //if credentials are correct, user can use returned JWT to access authorized api endpoints
             return Ok(token);
         }
 

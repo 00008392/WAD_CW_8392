@@ -19,28 +19,23 @@ namespace WAD._8392.DAL.Repositories
             _context.Manufacturers.Add(value);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(Manufacturer value)
         {
             _context.Manufacturers.Remove(value);
             await _context.SaveChangesAsync();
         }
-
         public async Task<List<Manufacturer>> GetAllAsync()
         {
             return await _context.Manufacturers.ToListAsync();
         }
-
         public async Task<Manufacturer> GetByIdAsync(int id)
         {
             return await _context.Manufacturers.FindAsync(id);
         }
-
         public bool IfExists(int id)
         {
             return _context.Manufacturers.Any(e => e.ManufacturerId == id);
         }
-
         public async Task UpdateAsync(Manufacturer value)
         {
             _context.Entry(value).State = EntityState.Modified;

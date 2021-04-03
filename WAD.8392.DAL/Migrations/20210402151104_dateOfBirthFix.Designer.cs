@@ -10,15 +10,15 @@ using WAD._8392.DAL.Context;
 namespace WAD._8392.DAL.Migrations
 {
     [DbContext(typeof(MusicInstrumentsDbContext))]
-    [Migration("20210314080225_FixingEnums")]
-    partial class FixingEnums
+    [Migration("20210402151104_dateOfBirthFix")]
+    partial class dateOfBirthFix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("WAD._8392.DAL.DBO.Manufacturer", b =>
@@ -51,6 +51,7 @@ namespace WAD._8392.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ManufacturerId")
@@ -72,7 +73,7 @@ namespace WAD._8392.DAL.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
@@ -133,6 +134,9 @@ namespace WAD._8392.DAL.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DateRegistered")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -154,9 +158,12 @@ namespace WAD._8392.DAL.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -173,7 +180,9 @@ namespace WAD._8392.DAL.Migrations
 
                     b.HasOne("WAD._8392.DAL.DBO.User", "Owner")
                         .WithMany("Products")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Manufacturer");
 

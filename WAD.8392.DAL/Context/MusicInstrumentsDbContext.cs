@@ -20,10 +20,12 @@ namespace WAD._8392.DAL.Context
         public virtual DbSet<Manufacturer> Manufacturers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //delete products when deleting user
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Owner)
                 .WithMany(t => t.Products)
                 .OnDelete(DeleteBehavior.Cascade);
+            //unique constraint on username
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique(true);

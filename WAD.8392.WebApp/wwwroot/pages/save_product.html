@@ -8,17 +8,17 @@
             <input class="input" placeholder="Product description" type="text" ng-model="product.productDescription" />
             <input class="input" placeholder="Price (in USD)" type="number" ng-model="product.price" />
             <input class="input" placeholder="Location" type="text" ng-model="product.location" />
-            <select class="input" ng-options="m as m.manufacturerName for m in manufacturers track by m.manufacturerId" ng-model="manufacturerSelected" ng-change="onChange(manufacturerSelected.manufacturerId, 'manufacturerId')">
-                <option ng-if="!editMode" value="">Please select manufacturer</option>
+            <select class="input" ng-options="m as m.manufacturerName for m in productInfo.manufacturers track by m.manufacturerId" ng-model="manufacturerSelected" ng-change="onChange(manufacturerSelected.manufacturerId, 'manufacturerId', product)">
+                <option  value="">Please select manufacturer</option>
             </select>
-            <select class="input" ng-options="p as p.subcategoryName for p in productSubcategories track by p.productSubcategoryId" ng-model="categorySelected" ng-change="onChange(categorySelected.productSubcategoryId, 'productSubcategoryId')">
-                <option ng-if="!editMode" value="">Please select subcategory</option>
+            <select class="input" ng-options="p as p.subcategoryName for p in productInfo.subcategories track by p.productSubcategoryId" ng-model="categorySelected" ng-change="onChange(categorySelected.productSubcategoryId, 'productSubcategoryId', product)">
+                <option  value="">Please select subcategory</option>
             </select>
-            <select class="input" ng-options="c as c.condName for c in conditions track by c.condValue" ng-model="selectedCondition" ng-change="onChange(selectedCondition.condValue, 'condition')">
-                <option ng-if="!editMode" value="">Please select condition</option>
+            <select class="input" ng-options="c as c.condName for c in productInfo.conditions track by c.condValue" ng-model="selectedCondition" ng-change="onChange(selectedCondition.condValue, 'condition', product)">
+                <option  value="">Please select condition</option>
             </select>
             <label ng-if="editMode">
-                <select class="input" ng-options="s as s.statusName for s in statuses track by s.statusValue" ng-model="selectedStatus" ng-change="onChange(selectedStatus.statusValue, 'status')">
+                <select class="input" ng-options="s as s.statusName for s in productInfo.statuses track by s.statusValue" ng-model="selectedStatus" ng-change="onChange(selectedStatus.statusValue, 'status', product)">
                 </select>
             </label>
             <input type="button" class="button" ng-click="Save()" value="Save product" />

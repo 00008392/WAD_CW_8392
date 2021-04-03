@@ -1,19 +1,10 @@
-﻿app.controller('RegisterController', ['$scope', '$http', '$location', 'AuthenticationService', 'AuthenticationCheck', function ($scope, $http, $location, AuthenticationService, AuthenticationCheck) {
-    $scope.user = {
-        id: 0,
-        firstName: '',
-        lastName: '',
-        phoneNumber: null,
-        dateOfBirth: null,
-        email: null,
-        userName: '',
-        password: ''
-    }
+﻿app.controller('RegisterController', ['$scope', '$http', '$location', 'AuthenticationService', function ($scope, $http, $location, AuthenticationService) {
+    $scope.user = {};
     $scope.mode = "Register";
     $scope.DisplayForm = true;
     $scope.info = "";
     $scope.message = "";
-    AuthenticationCheck.IsLogged(function (result) {
+    AuthenticationService.IsLogged(function (result) {
         if (result) {
             $scope.info = "You are already registered";
             $scope.DisplayForm = false;

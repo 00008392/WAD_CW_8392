@@ -1,5 +1,5 @@
 ﻿app.controller('ProductDetailsController', ['$scope', '$http', '$routeParams', 'DateConversion', function ($scope, $http, $routeParams, DateConversion) {
-    $scope.product = null;
+    $scope.product = {};
     $scope.message = "";
     $http.get(`api/Products/${$routeParams.ProductId}`).then(function (response) {
         $scope.product = response.data;

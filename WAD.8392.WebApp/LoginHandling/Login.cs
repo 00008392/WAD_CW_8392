@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WAD._8392.WebApp.LoginHandling
 {
+    //model for login
     public class Login
     {
         public string UserName { get; set; }

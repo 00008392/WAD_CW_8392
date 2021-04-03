@@ -52,7 +52,7 @@ namespace WAD._8392.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ManufacturerId")
+                    b.Property<int>("ManufacturerId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -65,13 +65,13 @@ namespace WAD._8392.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductSubcategoryId")
+                    b.Property<int>("ProductSubcategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
@@ -129,7 +129,8 @@ namespace WAD._8392.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateRegistered")
@@ -170,16 +171,21 @@ namespace WAD._8392.DAL.Migrations
                 {
                     b.HasOne("WAD._8392.DAL.DBO.Manufacturer", "Manufacturer")
                         .WithMany("Products")
-                        .HasForeignKey("ManufacturerId");
+                        .HasForeignKey("ManufacturerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WAD._8392.DAL.DBO.ProductSubcategory", "ProductSubcategory")
                         .WithMany("Products")
-                        .HasForeignKey("ProductSubcategoryId");
+                        .HasForeignKey("ProductSubcategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WAD._8392.DAL.DBO.User", "Owner")
                         .WithMany("Products")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Manufacturer");
 

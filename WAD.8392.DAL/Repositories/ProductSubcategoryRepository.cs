@@ -19,24 +19,21 @@ namespace WAD._8392.DAL.Repositories
             _context.ProductSubcategories.Add(value);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(ProductSubcategory value)
         {
             _context.ProductSubcategories.Remove(value);
             await _context.SaveChangesAsync();
         }
-
         public async Task<List<ProductSubcategory>> GetAllAsync()
         {
+            //display information from reated tables as well
             return await _context.ProductSubcategories.Include("ProductCategory").ToListAsync();
         }
-
         public async Task<ProductSubcategory> GetByIdAsync(int id)
         {
             return await _context.ProductSubcategories.Include("ProductCategory").FirstOrDefaultAsync(p=>p.ProductSubcategoryId==id);
 
         }
-
         public bool IfExists(int id)
         {
             return _context.ProductSubcategories.Any(e => e.ProductSubcategoryId == id);

@@ -13,10 +13,12 @@ namespace WAD._8392.DAL.Seeding
 {
     public class Seed
     {
+        //class for populating database with sample data
         public static void Initialize(MusicInstrumentsDbContext context)
         {
             if (!context.Users.Any())
             {
+                //populating with users
                 var users = new List<User>()
          {
             new User {  FirstName = "Sara", LastName = "O'Neil", DateOfBirth = DateTime.Parse("12-01-2000", CultureInfo.InvariantCulture),
@@ -36,6 +38,7 @@ namespace WAD._8392.DAL.Seeding
 
             if (!context.Manufacturers.Any())
             {
+                //populating with manufacturers
                 var manufacturers = new List<Manufacturer>()
          {
             new Manufacturer { ManufacturerName = "Gibson"},
@@ -63,7 +66,7 @@ namespace WAD._8392.DAL.Seeding
             }
             if (!context.ProductCategories.Any())
             {
-
+                //populating with categories
                 var productCategories = new List<ProductCategory>()
           {
              new ProductCategory {CategoryName = "String"},
@@ -80,6 +83,7 @@ namespace WAD._8392.DAL.Seeding
             }
             if (!context.ProductSubcategories.Any())
             {
+                //extracting categories to set correct foreign keys in subcategories
                 var str = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "String").ProductCategoryId;
                 var wind = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Wind").ProductCategoryId;
                 var key = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Keyboard").ProductCategoryId;
@@ -87,6 +91,7 @@ namespace WAD._8392.DAL.Seeding
                 var brass = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Brass").ProductCategoryId;
                 var electro = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Electronic").ProductCategoryId;
 
+                //populating with subcategories
                 var productSubcategories = new List<ProductSubcategory>()
           {
              new ProductSubcategory { SubcategoryName ="Violin", ProductCategoryId = str},
@@ -115,16 +120,18 @@ namespace WAD._8392.DAL.Seeding
             }
             if (!context.Products.Any())
             {
+                //extracting manufacturers to set correct foreign keys in products
                 var roland = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Roland").ManufacturerId;
                 var casio = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Casio").ManufacturerId;
                 var taylor = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Taylor").ManufacturerId;
                 var yamaha = context.Manufacturers.FirstOrDefault(x => x.ManufacturerName == "Yamaha").ManufacturerId;
-
+                //extracting subcategories to set correct foreign keys in products
                 var digital = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Digital piano").ProductSubcategoryId;
                 var syntezator = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Syntezator").ProductSubcategoryId;
                 var violin = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Violin").ProductSubcategoryId;
                 var guitar = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Guitar").ProductSubcategoryId;
                 var grand = context.ProductSubcategories.FirstOrDefault(x => x.SubcategoryName == "Digital Grand piano").ProductSubcategoryId;
+                //populating with products
                 var products = new List<Product>()
           {
              new Product { ProductName = "ROLAND HP603 CB", ProductDescription=@" built-in wireless Bluetooth® MIDI support for working with apps like Roland’s 

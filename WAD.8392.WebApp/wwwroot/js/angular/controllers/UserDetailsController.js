@@ -1,5 +1,5 @@
 ﻿app.controller('UserDetailsController', ['$scope', '$http', '$routeParams', 'DateConversion', function ($scope, $http, $routeParams, DateConversion) {
-    $scope.user = null;
+    $scope.user = {};
     $scope.products = [];
     $scope.message = "";
     $http.get(`api/Users/${$routeParams.UserId}`).then(function (response) {
