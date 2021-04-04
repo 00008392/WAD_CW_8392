@@ -3,7 +3,7 @@
 </h1>
 <div class="products">
     <div class="products__content" >
-        <div ng-repeat="product in products" class="products__content_item">
+        <div ng-repeat="product in data.products" class="products__content_item">
             <div class="item__description">
                 <div class="item_logo music_logo">{{product.productSubcategory.subcategoryName}}</div>
                 <h2 class="item__title">
@@ -23,7 +23,7 @@
     <div class="products__filter">
         <h3 class="filter__title">Manufacturers</h3>
         <div class="filter__category">
-            <label ng-repeat="manufacturer in manufacturers" class="input_container">
+            <label ng-repeat="manufacturer in data.manufacturers" class="input_container">
                 {{manufacturer.manufacturerName}}
                 <input type="radio" ng-model="filterParams.manufacturer" value="{{manufacturer.manufacturerId}}" ng-change="GetProducts()" />
                 <span class="checkmark"></span>
@@ -31,15 +31,15 @@
         </div>
         <h3 class="filter__title">Categories</h3>
         <div class="filter__category">
-            <label ng-repeat="category in categories" class="input_container">
+            <label ng-repeat="category in data.categories" class="input_container">
                 {{category.categoryName}}
-                <input type="radio" ng-model="filterParams.category" value="{{category.productCategoryId}}" ng-change="GetProductsFromCategory()" />
+                <input type="radio" ng-model="filterParams.category" value="{{category.productCategoryId}}" ng-change="GetDataFromCategory()" />
                 <span class="checkmark"></span>
             </label>
         </div>
         <h3 class="filter__title">Subcategories</h3>
         <div class="filter__category">
-            <label ng-repeat="subcategory in subcategories" class="input_container">
+            <label ng-repeat="subcategory in data.subcategories" class="input_container">
                 {{subcategory.subcategoryName}}
                 <input type="radio" ng-model="filterParams.subcategory" value="{{subcategory.productSubcategoryId}}" ng-change="GetProducts()" />
                 <span class="checkmark"></span>

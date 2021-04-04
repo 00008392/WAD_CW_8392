@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace WAD._8392.WebApp.Controllers
 
             return productCategory;
         }
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProductCategory(int id, ProductCategory productCategory)
         {
@@ -56,7 +57,6 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest();
             }
-
             try
             {
                 await _repository.UpdateAsync(productCategory);
@@ -75,7 +75,7 @@ namespace WAD._8392.WebApp.Controllers
 
             return NoContent();
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ProductCategory>> PostProductCategory(ProductCategory productCategory)
         {
@@ -85,9 +85,9 @@ namespace WAD._8392.WebApp.Controllers
             }
             await _repository.AddAsync(productCategory);
 
-            return CreatedAtAction("GetManufacturer", new { id = productCategory.ProductCategoryId }, productCategory);
+            return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {

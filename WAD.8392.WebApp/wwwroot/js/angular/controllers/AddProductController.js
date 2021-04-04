@@ -1,24 +1,33 @@
-﻿app.controller('AddProductController', ['$http', '$scope', '$location', 'AuthenticationService', 'ProductFactory', 'SelectInputHandling', function ($http, $scope, $location, AuthenticationService, ProductFactory, SelectInputHandling) {
+﻿//controller for product creation
+app.controller('AddProductController', ['$http', '$scope', '$location', 'FacadeService', function ($http, $scope, $location, FacadeService) {
+    //message to display error
     $scope.message = "";
+    //if user is not signed in, content is not displayed
     $scope.IsLogged = false;
+    //if edit mode is set to false, product status select input is not siaplyed in view (status is automatically set to available on server side)
     $scope.editMode = false;
-
+    //information from tables related to product (manufacturer, subcategory, conditionm status)
     $scope.productInfo = {};
-    ProductFactory.prepareProductInfo().then(function (data) {
+    FacadeService.PrepareProductInfo().then(function (data) {
         $scope.productInfo = data;
     })
-
-    AuthenticationService.IsLogged(function (result) {
+    $scope.product = {};
+    //check if user is signed in
+    FacadeService.IsLogged(function (result) {
         if (result) {
+            //display content
             $scope.IsLogged = true;
         }
     })
-    $scope.onChange = SelectInputHandling.onSelectChange;
-    $scope.product = {};
+    //grab the values from select input
+    $scope.onChange = FacadeService.OnSelectChange;
+    //create product
     $scope.Save = function () {
         $http.post("api/Products", $scope.product).then(function (response) {
+            //if created, go to the page with products created by this user
             $location.path('/MyProducts');
         }, function (error) {
+            //display the error
             $scope.message = error.data;
         })
     }

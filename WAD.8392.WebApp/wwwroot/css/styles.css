@@ -90,7 +90,6 @@ h1 {
     margin-bottom: 20px;
     transition: 0.7s;
 }
-
 .button:hover {
         color: #fff;
 }
@@ -109,7 +108,9 @@ h1 {
     background-color: #F2F2F2;
     margin-bottom: 10px;
 }
-
+.error {
+    color: #c90000;
+}
 .form {
     padding: 0 50px;
     display: flex;

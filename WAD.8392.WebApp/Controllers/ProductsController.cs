@@ -52,7 +52,7 @@ namespace WAD._8392.WebApp.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product is not found");
             }
 
             return product;
@@ -65,23 +65,21 @@ namespace WAD._8392.WebApp.Controllers
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
             //modifying product
-
+            //checking if all the fields are valid
+            //this check is placed before id check in order to avoid exception if product is null (since automatic model validation is disabled)
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (id != product.ProductId)
             {
-                return BadRequest();
+                return BadRequest("Product not found");
             }
             //checking if user is trying to modify his own product (if id of logged user is the same as id of product owner)
             if(!IsAuthorized(product.UserId))
             {
-                ModelState.AddModelError("Authorization", "You are not the owner of this product");
-                return Unauthorized(ModelState);
+                return Unauthorized("You are not the owner of this product");
             } 
-            //checking if all the fields are valid
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            
 
             try
             {
@@ -98,13 +96,13 @@ namespace WAD._8392.WebApp.Controllers
                     throw;
                 }
             }
-            //catching the exception in case if user did not indicate manufacturer and subcategory of the product (foreign keys are not nullable)
+            //catching the exception in case if user did not indicate valid manufacturer and subcategory of the product or if they are null
             catch (Exception ex)
             {
-                //if exception message contains given words, it means that necessary type of exception was caught
-                if (ex.InnerException.Message.Contains("FOREIGN KEY constraint"))
+                var error = CheckForeignKeyConstraintViolation(ex);
+                if (error!=null)
                 {
-                    ModelState.AddModelError("EmptyValues", "Either manufacturer or product subcategory field is empty");
+                    ModelState.AddModelError("InvalidValues", "Manufacturer or subcategory is not valid");
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -134,12 +132,14 @@ namespace WAD._8392.WebApp.Controllers
             {
                 await _repository.AddAsync(product);
             }
-            //catching the exception in case if user did not indicate manufacturer and subcategory of the product (foreign keys are not nullable)
+            //catching the exception in case if user did not indicate valid manufacturer and subcategory ids
+            //or if userId in product is the id of user that was deleted from database
             catch (Exception ex)
             {
-                if(ex.InnerException.Message.Contains("FOREIGN KEY constraint"))
+                var error = CheckForeignKeyConstraintViolation(ex);
+                if(error!=null)
                 {
-                    ModelState.AddModelError("EmptyValues", "Either manufacturer or product subcategory field is empty");
+                    ModelState.AddModelError("Error", error);
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -157,20 +157,40 @@ namespace WAD._8392.WebApp.Controllers
             var product = await _repository.GetByIdAsync(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product does not exist");
             }
             //checking if user is trying to delete his own product (if id of logged user is the same as id of product owner)
             if (!IsAuthorized(product.UserId))
             {
-                ModelState.AddModelError("Authorization", "You are not the owner of this product");
-                return Unauthorized(ModelState);
+                return Unauthorized("You are not the owner of this product");
             }
             await _repository.DeleteAsync(product);
 
             return NoContent();
         }
 
+        //check used in methods of modifying/deleting product
+        //if user is authorized (has JWT), but id of product that this user is trying to change is different,
+        //then user is trying to change not his product
+        private bool IsAuthorized(int id)
+        {
+            //getting the id of logged user
+            var loggedUserId = GetLoggedUserId();
+            //comparing it with id of entity that user is trying to change
+            return loggedUserId == id;
 
+        }
+
+        //method that checks whether foreign key constraints are violated
+        private string CheckForeignKeyConstraintViolation(Exception ex)
+        {
+            //if exception message contains given words, it means that necessary type of exception was caught
+            if (ex.InnerException.Message.Contains("FOREIGN KEY constraint"))
+            {
+                return "Either manufacturer, subcategory or user of the given product are invalid.";
+            }
+            return null;
+        }
         
     }
 }

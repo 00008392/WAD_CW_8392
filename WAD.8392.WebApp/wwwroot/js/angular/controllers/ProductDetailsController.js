@@ -1,11 +1,16 @@
-﻿app.controller('ProductDetailsController', ['$scope', '$http', '$routeParams', 'DateConversion', function ($scope, $http, $routeParams, DateConversion) {
-    $scope.product = {};
+﻿//controller for displaying product details
+app.controller('ProductDetailsController', ['$scope', '$http', '$routeParams', 'FacadeService', function ($scope, $http, $routeParams, FacadeService) {
+    $scope.product = null;
+    //message to display error
     $scope.message = "";
     $http.get(`api/Products/${$routeParams.ProductId}`).then(function (response) {
+        //if product exists, display product info in the view
         $scope.product = response.data;
-        $scope.product.datePublished = DateConversion.ConvertDate($scope.product.datePublished);
+        //display date published in user friendly way
+        $scope.product.datePublished = FacadeService.ConvertDate($scope.product.datePublished);
     },
         function (error) {
-            $scope.message = error.data.title;
+            //display error
+            $scope.message = error.data;
         })
 }])

@@ -1,18 +1,26 @@
-﻿app.controller('UserDetailsController', ['$scope', '$http', '$routeParams', 'DateConversion', function ($scope, $http, $routeParams, DateConversion) {
-    $scope.user = {};
+﻿//controller for displaying user details
+app.controller('UserDetailsController', ['$scope', '$http', '$routeParams', 'FacadeService', function ($scope, $http, $routeParams, FacadeService) {
+    $scope.user = null;
     $scope.products = [];
+    //message to display error
     $scope.message = "";
     $http.get(`api/Users/${$routeParams.UserId}`).then(function (response) {
+        //in case of success display user info in the view
         $scope.user = response.data;
-        $scope.user.dateOfBirth = DateConversion.ConvertDate($scope.user.dateOfBirth);
+        //display date of birth in user friendly way
+        $scope.user.dateOfBirth = FacadeService.ConvertDate($scope.user.dateOfBirth);
+        //get products of the user
         $http.get(`api/Products?user=${$scope.user.userId}`).then(function (response) {
+            //display products in the view 
             $scope.products = response.data;
+            //display date published in user friendly way
             $scope.products.forEach(product => {
-                product.datePublished = DateConversion.ConvertDate(product.datePublished);
+                product.datePublished = FacadeService.ConvertDate(product.datePublished);
             })
         })
     },
         function (error) {
-            $scope.message = error.data.title;
+            //display error
+            $scope.message = error.data;
         })
 }])

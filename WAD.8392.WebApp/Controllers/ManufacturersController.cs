@@ -62,7 +62,6 @@ namespace WAD._8392.WebApp.Controllers
             {
                 return BadRequest();
             }
-
             try
             {
                 await _repository.UpdateAsync(manufacturer);

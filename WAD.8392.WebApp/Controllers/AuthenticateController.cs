@@ -24,6 +24,10 @@ namespace WAD._8392.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Authenticate([FromBody] Login login)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             //getting token based on credentials
             var token = await _authenticationManager.Authenticate(login.UserName, login.Password);
             //if token is null, it means that credentials are not correct

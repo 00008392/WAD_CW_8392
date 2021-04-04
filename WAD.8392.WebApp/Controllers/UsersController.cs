@@ -23,6 +23,7 @@ namespace WAD._8392.WebApp.Controllers
     {
         //controller for handling users
         private readonly IConverter<User, UserDetails> _converter;
+        
         public UsersController(IRepository<User> repository, IConverter<User, UserDetails> converter) :base(repository)
         {
             _converter = converter;
@@ -45,7 +46,7 @@ namespace WAD._8392.WebApp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User is not found");
             }
             //get used details without password information (DTO is used)
             return Ok(_converter.ConvertToDTO(user));
@@ -57,41 +58,39 @@ namespace WAD._8392.WebApp.Controllers
         {
             //getting information about authenticated user (this info can be accessed only by signed in user)
             //getting signed in user id from jwt (unique identifier)
-            var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-           
+            var id = GetLoggedUserId();
             var user = await _repository.GetByIdAsync(id);
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User does not exist");
             }
 
             return user;
         }
 
-        // PUT: api/Users/5
+ 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        [HttpPut]
+        //in this method, id is not passed through url, instead it is taken from JWT token signature (name identifier)
+        //since only logged in user can modify his own account
+        //JWT token is passed in request header
+        public async Task<IActionResult> PutUser(User user)
         {
-            //modifying user account
-            if (id != user.UserId)
-            {
-                return BadRequest();
-            }
+            //getting id of user from JWT signature
+            int id = GetLoggedUserId();
             //checking if all the fields are valid
+            //this check is placed before id check in order to avoid exception if user is null (since automatic model validation is disabled)
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            //checking if id of signed user is the same as id of user that is being modified (in other words, if the user is trying to modify his own account)
-            if (!IsAuthorized(id))
+            //checking if user is modifying his own account
+            if (id != user.UserId)
             {
-                ModelState.AddModelError("Authorization", "You are not the owner of this account");
-                return Unauthorized(ModelState);
+                return Unauthorized("You are not the owner of this account");
             }
-
 
             try
             {
@@ -112,11 +111,10 @@ namespace WAD._8392.WebApp.Controllers
             //catching exception of unique constraint violation (when user is trying to change username to the one that already exists in the database)
             catch (Exception ex)
             {
-                
-                if (CheckUniqueConstraintViolation(ex))
-                {
 
-                    ModelState.AddModelError("UserName", "This username is already taken");
+                if (CheckUniqueConstraintViolation(ex)!=null)
+                {
+                    ModelState.AddModelError("UserName", CheckUniqueConstraintViolation(ex));
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -147,9 +145,9 @@ namespace WAD._8392.WebApp.Controllers
             catch (Exception ex)
             {
 
-                if (CheckUniqueConstraintViolation(ex))
+                if (CheckUniqueConstraintViolation(ex)!=null)
                 {
-                    ModelState.AddModelError("UserName", "This username is already taken");
+                    ModelState.AddModelError("UserName", CheckUniqueConstraintViolation(ex));
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -161,35 +159,36 @@ namespace WAD._8392.WebApp.Controllers
 
         // DELETE: api/Users/5
         [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete]
+        //in this method, id is not passed through url, instead it is taken from JWT token signature (name identifier)
+        //since only logged in user can delete his own account
+        //JWT token is passed in request header
+        public async Task<IActionResult> DeleteUser()
         {
-            //checking if user is trying to delete his own account (if id of logged user is the same of id of person that is being deleted )
-            if (!IsAuthorized(id))
-            {
-                ModelState.AddModelError("Authorization", "You are not the owner of this account");
-                return Unauthorized(ModelState);
-            }
+            //getting id of user from JWT signature
+            int id = GetLoggedUserId();
+            //checking if user exists
             var user = await _repository.GetByIdAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User does not exist");
             }
-
             await _repository.DeleteAsync(user);
 
             return NoContent();
         }
 
-        private bool CheckUniqueConstraintViolation (Exception ex)
+        //this method checks whether the user is trying to take username that is already taken
+        private string CheckUniqueConstraintViolation (Exception ex)
         {
             //if exception message contains the given words, it means that exception regarding unique username violation is caught
             if (ex.InnerException.Message.Contains("duplicate key row"))
             {
-                return true;
+                return "This username is already taken";
             }
-            return false;
+            return null;
         }
+
 
     }
 }

@@ -1,6 +1,9 @@
-﻿app.factory('SelectInputHandling', function () {
+﻿//service for handling the values from select input
+app.factory('SelectInputHandling', function () {
     return {
-        onSelectChange: function (item, context, product) {
+        //item is value of input
+        //context is property of object to which the value belongs (manufacturer, condition, status, subcategory)
+        OnSelectChange: function (item, context, product) {
             product[context] = item;
         }
     }

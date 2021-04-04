@@ -49,19 +49,18 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[Authorize]
-        [HttpPut("/{id}")]
+        [Authorize]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutProductSubcategory(int id, ProductSubcategory productSubcategory)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (id != productSubcategory.ProductSubcategoryId)
             {
                 return BadRequest();
             }
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-           
 
             try
             {
@@ -97,7 +96,7 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         [Authorize]
-        [HttpDelete("/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductSubcategory(int id)
         {
             var productSubcategory = await _repository.GetByIdAsync(id);

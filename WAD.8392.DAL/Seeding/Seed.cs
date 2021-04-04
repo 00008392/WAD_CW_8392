@@ -90,7 +90,7 @@ namespace WAD._8392.DAL.Seeding
                 var percussion = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Percussion").ProductCategoryId;
                 var brass = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Brass").ProductCategoryId;
                 var electro = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Electronic").ProductCategoryId;
-
+                var other = context.ProductCategories.FirstOrDefault(x => x.CategoryName == "Other").ProductCategoryId;
                 //populating with subcategories
                 var productSubcategories = new List<ProductSubcategory>()
           {
@@ -113,7 +113,8 @@ namespace WAD._8392.DAL.Seeding
              new ProductSubcategory { SubcategoryName ="Digital piano", ProductCategoryId = electro},
              new ProductSubcategory { SubcategoryName ="Syntezator", ProductCategoryId = electro},
              new ProductSubcategory { SubcategoryName ="Digital Grand piano", ProductCategoryId = electro},
-             new ProductSubcategory { SubcategoryName ="Grand piano", ProductCategoryId = key}
+             new ProductSubcategory { SubcategoryName ="Grand piano", ProductCategoryId = key},
+             new ProductSubcategory { SubcategoryName ="Other", ProductCategoryId = other},
           };
                 context.ProductSubcategories.AddRange(productSubcategories);
                 context.SaveChanges();

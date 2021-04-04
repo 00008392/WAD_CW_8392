@@ -20,16 +20,10 @@ namespace WAD._8392.WebApp.Controllers
         {
             _repository = repository;
         }
-        //check used in methods of modifying/deleting user/product
-        //if user is authorized (has JWT), but id of user or product that this user is trying to change is different,
-        //then user is trying to change another account
-        protected bool IsAuthorized(int id)
+        //getting id of logged user from JWT signature
+        protected int GetLoggedUserId()
         {
-            //getting the id of logged user
-            var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            //comparing it with id of entity that user is trying to change
-            return loggedUserId == id;
-            
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
     }
 }

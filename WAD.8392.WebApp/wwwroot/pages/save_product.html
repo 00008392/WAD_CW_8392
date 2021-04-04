@@ -3,7 +3,9 @@
     <div class="row justify-content-center">
         <div class="col-md-5 form">
             <h2 class="title">Product</h2>
-            <p class="item__text font-weight-bold">{{message}}</p>
+            <div ng-repeat="(key, value) in message">
+                <p class="item__text font-weight-bold error" ng-repeat="error in value">{{error}}</p>
+            </div>
             <input class="input" placeholder="Product name" type="text" ng-model="product.productName" />
             <input class="input" placeholder="Product description" type="text" ng-model="product.productDescription" />
             <input class="input" placeholder="Price (in USD)" type="number" ng-model="product.price" />
