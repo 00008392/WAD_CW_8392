@@ -25,7 +25,8 @@ namespace WAD._8392.DAL.DBO
         public Condition Condition { get; set; }
         [Required(ErrorMessage ="Price is required")]
         [Range(0, double.MaxValue, ErrorMessage ="Invalid price")]
-        public decimal Price { get; set; }
+        //price has data annotation required and decimal? type for more convenient model validation
+        public decimal? Price { get; set; }
         //convert enum values to display string instead of int in json
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Status Status { get; set; } 
