@@ -25,5 +25,15 @@ namespace WAD._8392.WebApp.Controllers
         {
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
+        //this method checks for specific exception based on exception message 
+        protected bool CheckInnerException(Exception ex, string message)
+        {
+            if(ex.InnerException.Message.Contains(message))
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }

@@ -7,7 +7,7 @@
         <p class="item__text"><span>Username:</span> {{user.userName}}</p>
         <p class="item__text"><span>Phone number:</span> {{user.phoneNumber}}</p>
         <div class="user_details">
-            <input type="button" class="button" value="Sign out" ng-click="SignOut()" />
+            <input type="button" class="button" value="Sign out" ng-controller="SignOutController" ng-click="SignOut()" />
             <input type="button" data-toggle="modal" data-target="#deleteAccountModal" class="button btn-danger" value="Delete account" />
             <a class="button" href="#!/EditAccount">Edit account</a>
             <a class="button" href="#!/MyProducts">See my products</a>
@@ -28,7 +28,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" ng-click="Delete()" data-dismiss="modal">Delete</button>
+                <button type="button" class="btn btn-danger" ng-controller="DeleteAccountController" ng-click="Delete()" data-dismiss="modal">Delete</button>
             </div>
         </div>
     </div>

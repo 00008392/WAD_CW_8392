@@ -22,12 +22,5 @@ app.controller('MyProductsController', ['$scope', '$http', 'FacadeService', func
             $scope.message = "Sign in to see your products";
         }
     })
-    //function for product deletion
-    $scope.Delete = function (product) {
-        $http.delete(`api/Products/${product.productId}`).then(function (response) {
-            //in case of success, remove the product from product list
-            var index = $scope.products.indexOf(product);
-            $scope.products.splice(index, 1);
-        })
-    }
+   
 }])

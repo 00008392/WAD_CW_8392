@@ -99,10 +99,9 @@ namespace WAD._8392.WebApp.Controllers
             //catching the exception in case if user did not indicate valid manufacturer and subcategory of the product or if they are null
             catch (Exception ex)
             {
-                var error = CheckForeignKeyConstraintViolation(ex);
-                if (error!=null)
+                if (CheckForeignKeyConstraint(ex)!=null)
                 {
-                    ModelState.AddModelError("InvalidValues", "Manufacturer or subcategory is not valid");
+                    ModelState.AddModelError("InvalidValues", CheckForeignKeyConstraint(ex));
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -136,10 +135,9 @@ namespace WAD._8392.WebApp.Controllers
             //or if userId in product is the id of user that was deleted from database
             catch (Exception ex)
             {
-                var error = CheckForeignKeyConstraintViolation(ex);
-                if(error!=null)
+                if(CheckForeignKeyConstraint(ex)!=null)
                 {
-                    ModelState.AddModelError("Error", error);
+                    ModelState.AddModelError("Error", CheckForeignKeyConstraint(ex));
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -180,16 +178,14 @@ namespace WAD._8392.WebApp.Controllers
             return loggedUserId == id;
 
         }
-
-        //method that checks whether foreign key constraints are violated
-        private string CheckForeignKeyConstraintViolation(Exception ex)
+        private string CheckForeignKeyConstraint(Exception ex)
         {
-            //if exception message contains given words, it means that necessary type of exception was caught
-            if (ex.InnerException.Message.Contains("FOREIGN KEY constraint"))
+            if (CheckInnerException(ex, "FOREIGN KEY constraint"))
             {
-                return "Either manufacturer, subcategory or user of the given product are invalid.";
+                return "Either manufacturer, subcategory or user of the given product is invalid.";
             }
             return null;
+
         }
         
     }

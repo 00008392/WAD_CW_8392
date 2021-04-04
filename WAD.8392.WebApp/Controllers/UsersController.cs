@@ -112,9 +112,9 @@ namespace WAD._8392.WebApp.Controllers
             catch (Exception ex)
             {
 
-                if (CheckUniqueConstraintViolation(ex)!=null)
+                if (CheckUniqueUsername(ex)!=null)
                 {
-                    ModelState.AddModelError("UserName", CheckUniqueConstraintViolation(ex));
+                    ModelState.AddModelError("UserName", CheckUniqueUsername(ex));
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -145,9 +145,9 @@ namespace WAD._8392.WebApp.Controllers
             catch (Exception ex)
             {
 
-                if (CheckUniqueConstraintViolation(ex)!=null)
+                if (CheckUniqueUsername(ex)!=null)
                 {
-                    ModelState.AddModelError("UserName", CheckUniqueConstraintViolation(ex));
+                    ModelState.AddModelError("UserName", CheckUniqueUsername(ex));
                     return BadRequest(ModelState);
                 }
                 throw;
@@ -178,17 +178,14 @@ namespace WAD._8392.WebApp.Controllers
             return NoContent();
         }
 
-        //this method checks whether the user is trying to take username that is already taken
-        private string CheckUniqueConstraintViolation (Exception ex)
+        private string CheckUniqueUsername(Exception ex)
         {
-            //if exception message contains the given words, it means that exception regarding unique username violation is caught
-            if (ex.InnerException.Message.Contains("duplicate key row"))
+            if(CheckInnerException(ex, "duplicate key row"))
             {
-                return "This username is already taken";
+                return "This username is already taken.";
             }
             return null;
         }
-
 
     }
 }

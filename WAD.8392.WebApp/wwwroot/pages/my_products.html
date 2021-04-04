@@ -24,7 +24,7 @@
             </div>
             <div>
                 <a class="button" href="#!/EditProduct/{{product.productId}}">Modify</a>
-                <input class="button btn-danger" type="button" ng-click="Delete(product)" value="Delete" />
+                <input class="button btn-danger" type="button" ng-controller="DeleteProductController" ng-click="Delete($parent.product)" value="Delete" />
             </div>
         </div>
     </div>

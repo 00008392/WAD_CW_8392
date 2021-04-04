@@ -1,0 +1,24 @@
+[
+    {
+        "outputFileName": "wwwroot/js/build/angularscripts.js",
+        "inputFiles": [
+            "wwwroot/js/angular/common/*.js",
+            "wwwroot/js/angular/services/*.js",
+            "wwwroot/js/angular/controllers/*.js"
+        ],
+        "minify": {
+            "enabled": true,
+            "renameLocals": true
+        }
+    },
+    {
+        "outputFileName": "wwwroot/js/build/commonscripts.js",
+        "inputFiles": [
+            "wwwroot/js/common/*.js"
+        ],
+        "minify": {
+            "enabled": true,
+            "renameLocals": true
+        }
+    }
+]

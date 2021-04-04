@@ -1,4 +1,5 @@
-﻿app.config(function ($routeProvider) {
+﻿//route settings
+app.config(['$routeProvider',function ($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: 'pages/index.html',
@@ -47,4 +48,4 @@
         .otherwise({
             redirectTo: '/'
         })
-});
+}]);
