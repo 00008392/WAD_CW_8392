@@ -45,6 +45,9 @@ app.config(['$routeProvider',function ($routeProvider) {
             templateUrl: 'pages/product_details.html',
             controller: 'ProductDetailsController'
         })
+        .when('/About', {
+            templateUrl: 'pages/about.html'
+        })
         .otherwise({
             redirectTo: '/'
         })

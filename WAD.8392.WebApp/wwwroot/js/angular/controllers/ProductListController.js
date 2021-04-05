@@ -1,4 +1,4 @@
-﻿//controller for displaying and filtering of product list
+﻿//controller for displaying and filtering of list of products with status "Available"
 app.controller('ProductListController', ['$scope', '$http', '$q','FacadeService', function ($scope, $http, $q,FacadeService) {
     //data that will be displayed in the view
     $scope.data = {

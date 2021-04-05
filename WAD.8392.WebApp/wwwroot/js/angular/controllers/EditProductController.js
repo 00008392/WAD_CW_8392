@@ -12,11 +12,16 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
     //if user is signed in, edit form is displayed
     FacadeService.IsLogged(function (result) {
         if (result) {
-            $scope.IsLogged = true;
+ 
             //get the information related to rpoduct and then the product itself and display it in the form
             $q.all([FacadeService.PrepareProductInfo(), $http.get(`api/Products/${$routeParams.ProductId}`)]).then(function (response) {
                 $scope.productInfo = response[0];
                 $scope.product = response[1].data;
+                //if user is logged in, but is trying to modify not his own product, edit form is not displayed
+                if ($scope.product.userId == FacadeService.GetCurrentUser().userId) {
+
+                    $scope.IsLogged = true;
+                }
                 //correctly display information in select inputs
                 $scope.selectedCondition =$scope.productInfo.conditions.find(c => c.condName == $scope.product.condition)
                 $scope.selectedStatus = $scope.productInfo.statuses.find(s => s.statusName == $scope.product.status)
@@ -34,8 +39,11 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
             $location.path('/MyProducts');
         },
             function (error) {
+        
                 //display error
                 $scope.message = error.data;
+                //response data can be either an object (which will be displayed in ng-repeat block) or just a string
+                $scope.isObject = angular.isObject(error.data);
             }
         )
     }

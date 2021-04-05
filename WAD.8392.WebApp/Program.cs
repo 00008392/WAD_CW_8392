@@ -22,6 +22,7 @@ namespace WAD._8392.WebApp
                 var services = scope.ServiceProvider;
                 try
                 {
+                    //seeding database when project is run
                     var context = services.GetRequiredService<MusicInstrumentsDbContext>();
                     Seed.Initialize(context);
                 }

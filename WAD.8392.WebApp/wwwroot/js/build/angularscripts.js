@@ -47,6 +47,9 @@ app.config(['$routeProvider',function ($routeProvider) {
             templateUrl: 'pages/product_details.html',
             controller: 'ProductDetailsController'
         })
+        .when('/About', {
+            templateUrl: 'pages/about.html'
+        })
         .otherwise({
             redirectTo: '/'
         })
@@ -218,6 +221,8 @@ app.controller('AddProductController', ['$http', '$scope', '$location', 'FacadeS
             $location.path('/MyProducts');
         }, function (error) {
             //display the error
+                $scope.isObject = angular.isObject(error.data);
+            //response data can be either an object (which will be displayed in ng-repeat block) or just a string
             $scope.message = error.data;
         })
     }
@@ -282,6 +287,8 @@ app.controller('EditAccountController', ['$scope', '$http', '$location', 'Facade
             function (error) {
                 //display error
                 $scope.message = error.data;
+                //response data can be either an object (which will be displayed in ng-repeat block) or just a string
+                $scope.isObject = angular.isObject(error.data);
             }
         )
     }
@@ -301,11 +308,16 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
     //if user is signed in, edit form is displayed
     FacadeService.IsLogged(function (result) {
         if (result) {
-            $scope.IsLogged = true;
+ 
             //get the information related to rpoduct and then the product itself and display it in the form
             $q.all([FacadeService.PrepareProductInfo(), $http.get(`api/Products/${$routeParams.ProductId}`)]).then(function (response) {
                 $scope.productInfo = response[0];
                 $scope.product = response[1].data;
+                //if user is logged in, but is trying to modify not his own product, edit form is not displayed
+                if ($scope.product.userId == FacadeService.GetCurrentUser().userId) {
+
+                    $scope.IsLogged = true;
+                }
                 //correctly display information in select inputs
                 $scope.selectedCondition =$scope.productInfo.conditions.find(c => c.condName == $scope.product.condition)
                 $scope.selectedStatus = $scope.productInfo.statuses.find(s => s.statusName == $scope.product.status)
@@ -323,8 +335,11 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
             $location.path('/MyProducts');
         },
             function (error) {
+        
                 //display error
                 $scope.message = error.data;
+                //response data can be either an object (which will be displayed in ng-repeat block) or just a string
+                $scope.isObject = angular.isObject(error.data);
             }
         )
     }
@@ -401,7 +416,7 @@ app.controller('ProductDetailsController', ['$scope', '$http', '$routeParams', '
             $scope.message = error.data;
         })
 }])
-//controller for displaying and filtering of product list
+//controller for displaying and filtering of list of products with status "Available"
 app.controller('ProductListController', ['$scope', '$http', '$q','FacadeService', function ($scope, $http, $q,FacadeService) {
     //data that will be displayed in the view
     $scope.data = {
@@ -516,7 +531,9 @@ app.controller('RegisterController', ['$scope', '$http', '$location', 'FacadeSer
             })
         }, function (error) {
                 //display error
-            $scope.message = error.data;
+                $scope.message = error.data;
+                //response data can be either an object (which will be displayed in ng-repeat block) or just a string
+                $scope.isObject = angular.isObject(error.data);
         });
     }
 }])

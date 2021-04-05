@@ -28,6 +28,8 @@ app.controller('AddProductController', ['$http', '$scope', '$location', 'FacadeS
             $location.path('/MyProducts');
         }, function (error) {
             //display the error
+                $scope.isObject = angular.isObject(error.data);
+            //response data can be either an object (which will be displayed in ng-repeat block) or just a string
             $scope.message = error.data;
         })
     }

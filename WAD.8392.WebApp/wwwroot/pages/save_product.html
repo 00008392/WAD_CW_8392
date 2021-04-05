@@ -1,11 +1,14 @@
 ﻿<div ng-if="!IsLogged">Sign in to add or edit products</div>
 <div ng-if="IsLogged" class="container">
     <div class="row justify-content-center">
-        <div class="col-md-5 form">
+        <div class="col-lg-5 col-md-8 form">
             <h2 class="title">Product</h2>
-            <div ng-repeat="(key, value) in message">
-                <p class="item__text font-weight-bold error" ng-repeat="error in value">{{error}}</p>
+            <div ng-if="isObject">
+                <div ng-repeat="(key, value) in message">
+                    <p class="item__text font-weight-bold error" ng-repeat="error in value">{{error}}</p>
+                </div>
             </div>
+            <p ng-if="!isObject" class="item__text font-weight-bold error">{{message}}</p>
             <input class="input" placeholder="Product name" type="text" ng-model="product.productName" />
             <input class="input" placeholder="Product description" type="text" ng-model="product.productDescription" />
             <input class="input" placeholder="Price (in USD)" type="number" ng-model="product.price" />

@@ -29,6 +29,8 @@ app.controller('EditAccountController', ['$scope', '$http', '$location', 'Facade
             function (error) {
                 //display error
                 $scope.message = error.data;
+                //response data can be either an object (which will be displayed in ng-repeat block) or just a string
+                $scope.isObject = angular.isObject(error.data);
             }
         )
     }
