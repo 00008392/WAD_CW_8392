@@ -14,7 +14,7 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
         if (result) {
  
             //get the information related to rpoduct and then the product itself and display it in the form
-            $q.all([FacadeService.PrepareProductInfo(), $http.get(`api/Products/${$routeParams.ProductId}`)]).then(function (response) {
+            $q.all([FacadeService.PrepareProductInfo(), $http.get(`api/products/${$routeParams.ProductId}`)]).then(function (response) {
                 $scope.productInfo = response[0];
                 $scope.product = response[1].data;
                 //if user is logged in, but is trying to modify not his own product, edit form is not displayed
@@ -34,7 +34,7 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
     $scope.onChange = FacadeService.OnSelectChange;
     //function for editing product
     $scope.Save = function () {
-        $http.put(`api/Products/${$routeParams.ProductId}`, $scope.product).then(function (response) {
+        $http.put(`api/products/${$routeParams.ProductId}`, $scope.product).then(function (response) {
             //in case of success redirect to the page with products of the user
             $location.path('/MyProducts');
         },

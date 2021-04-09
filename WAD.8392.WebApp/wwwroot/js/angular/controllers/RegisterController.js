@@ -18,7 +18,7 @@ app.controller('RegisterController', ['$scope', '$http', '$location', 'FacadeSer
     })
     //function to register user
     $scope.Save = function () {
-        $http.post("api/Users", $scope.user).then(function (response) {
+        $http.post("api/users", $scope.user).then(function (response) {
             //in case of success, automatically sign in
             $scope.login = {
                 userName: $scope.user.userName,

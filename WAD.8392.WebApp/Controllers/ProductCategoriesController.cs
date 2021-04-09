@@ -12,16 +12,16 @@ using WAD._8392.DAL.Repositories;
 
 namespace WAD._8392.WebApp.Controllers
 {
-    [Route("api/Categories")]
+    [Route("api/categories")]
     [ApiController]
     public class ProductCategoriesController : GenericController<ProductCategory>
     {
         //controller for handling product categories
         //note: methods of adding/updating/deleting categories are not included in the client application,
         //since it would not make sense if any user registered in the system would be able to change this information
-        //logic for these methods is not fully implemented in this controller as well
-        //proper logic would be to allow admins to do that, but it was decided not to include this functionality in the application for now,
-        //maybe in the future it will be added
+        //proper logic would be to allow admins to do that, that is why, role admin was put in authorize filter,
+        //but it was decided not to develop role based authentication in the application for now,
+        //maybe in the future it will be added 
         //that is why, database was already populated with sufficient number of categories
         public ProductCategoriesController(IRepository<ProductCategory> repository) : base(repository)
         {
@@ -45,7 +45,7 @@ namespace WAD._8392.WebApp.Controllers
 
             return productCategory;
         }
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProductCategory(int id, ProductCategory productCategory)
         {
@@ -75,7 +75,7 @@ namespace WAD._8392.WebApp.Controllers
 
             return NoContent();
         }
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<ActionResult<ProductCategory>> PostProductCategory(ProductCategory productCategory)
         {
@@ -87,7 +87,7 @@ namespace WAD._8392.WebApp.Controllers
 
             return CreatedAtAction("GetProductCategory", new { id = productCategory.ProductCategoryId }, productCategory);
         }
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {

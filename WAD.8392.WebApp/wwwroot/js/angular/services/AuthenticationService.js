@@ -23,12 +23,12 @@ app.service('AuthenticationService', ['$http', function ($http) {
             if (result) {
                 callback(false);
             } else {
-                $http.post("api/Authentication", login).then(
+                $http.post("api/authentication", login).then(
                     function (response) {
                         //if credentials are correct, store user in sessionStorage along with token
                         sessionStorage.setItem('token', response.data);
                         $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
-                        $http.get("api/Users/Account").then(function (response) {
+                        $http.get("api/users/account").then(function (response) {
                             service.SetCurrentUser(response.data);
                             callback(true);
                         })

@@ -29,6 +29,12 @@ namespace WAD._8392.DAL.Context
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique(true);
+            //username is case sensitive
+            modelBuilder.Entity<User>().Property(c => c.UserName)
+            .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+            //password is case sensitive
+            modelBuilder.Entity<User>().Property(c => c.Password)
+            .UseCollation("SQL_Latin1_General_CP1_CS_AS");
         }
     }
 }

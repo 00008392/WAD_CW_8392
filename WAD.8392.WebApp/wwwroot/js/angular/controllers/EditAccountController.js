@@ -21,7 +21,7 @@ app.controller('EditAccountController', ['$scope', '$http', '$location', 'Facade
     })
     //function for editing user
     $scope.Save = function () {
-        $http.put(`api/Users`, $scope.user).then(function (response) {
+        $http.put(`api/users/account`, $scope.user).then(function (response) {
             //in case of success, update the current user info in session storage and redirect to account page
             FacadeService.SetCurrentUser($scope.user);
             $location.path('/MyAccount');

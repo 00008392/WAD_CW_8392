@@ -23,7 +23,7 @@ app.controller('AddProductController', ['$http', '$scope', '$location', 'FacadeS
     $scope.onChange = FacadeService.OnSelectChange;
     //create product
     $scope.Save = function () {
-        $http.post("api/Products", $scope.product).then(function (response) {
+        $http.post("api/products", $scope.product).then(function (response) {
             //if created, go to the page with products created by this user
             $location.path('/MyProducts');
         }, function (error) {

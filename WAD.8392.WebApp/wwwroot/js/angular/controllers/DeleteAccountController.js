@@ -4,7 +4,7 @@ app.controller('DeleteAccountController', ['$http', '$scope', 'FacadeService', f
     //function for account deletion
     $scope.Delete = function () {
         //delete user
-        $http.delete(`api/Users`).then(function (response) {
+        $http.delete(`api/users/account`).then(function (response) {
             //clear http headers and session storage from current user info
             FacadeService.Logout();
             //$parent is AccountController

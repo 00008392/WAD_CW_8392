@@ -4,13 +4,13 @@ app.controller('UserDetailsController', ['$scope', '$http', '$routeParams', 'Fac
     $scope.products = [];
     //message to display error
     $scope.message = "";
-    $http.get(`api/Users/${$routeParams.UserId}`).then(function (response) {
+    $http.get(`api/users/${$routeParams.UserId}`).then(function (response) {
         //in case of success display user info in the view
         $scope.user = response.data;
         //display date of birth in user friendly way
         $scope.user.dateOfBirth = FacadeService.ConvertDate($scope.user.dateOfBirth);
         //get products of the user
-        $http.get(`api/Products?user=${$scope.user.userId}`).then(function (response) {
+        $http.get(`api/products?user=${$scope.user.userId}`).then(function (response) {
             //display products in the view 
             $scope.products = response.data;
             //display date published in user friendly way

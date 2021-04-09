@@ -79,12 +79,12 @@ app.service('AuthenticationService', ['$http', function ($http) {
             if (result) {
                 callback(false);
             } else {
-                $http.post("api/Authentication", login).then(
+                $http.post("api/authentication", login).then(
                     function (response) {
                         //if credentials are correct, store user in sessionStorage along with token
                         sessionStorage.setItem('token', response.data);
                         $http.defaults.headers.common.Authorization = 'Bearer ' + response.data;
-                        $http.get("api/Users/Account").then(function (response) {
+                        $http.get("api/users/account").then(function (response) {
                             service.SetCurrentUser(response.data);
                             callback(true);
                         })
@@ -216,7 +216,7 @@ app.controller('AddProductController', ['$http', '$scope', '$location', 'FacadeS
     $scope.onChange = FacadeService.OnSelectChange;
     //create product
     $scope.Save = function () {
-        $http.post("api/Products", $scope.product).then(function (response) {
+        $http.post("api/products", $scope.product).then(function (response) {
             //if created, go to the page with products created by this user
             $location.path('/MyProducts');
         }, function (error) {
@@ -233,7 +233,7 @@ app.controller('DeleteAccountController', ['$http', '$scope', 'FacadeService', f
     //function for account deletion
     $scope.Delete = function () {
         //delete user
-        $http.delete(`api/Users`).then(function (response) {
+        $http.delete(`api/users/account`).then(function (response) {
             //clear http headers and session storage from current user info
             FacadeService.Logout();
             //$parent is AccountController
@@ -249,7 +249,7 @@ app.controller('DeleteAccountController', ['$http', '$scope', 'FacadeService', f
 app.controller('DeleteProductController', ['$scope', '$http', function ($scope, $http) {
     //function for product deletion
     $scope.Delete = function (product) {
-        $http.delete(`api/Products/${product.productId}`).then(function (response) {
+        $http.delete(`api/products/${product.productId}`).then(function (response) {
             //in case of success, remove the product from product list
             var index = $scope.$parent.products.indexOf(product);
             $scope.$parent.products.splice(index, 1);
@@ -279,7 +279,7 @@ app.controller('EditAccountController', ['$scope', '$http', '$location', 'Facade
     })
     //function for editing user
     $scope.Save = function () {
-        $http.put(`api/Users`, $scope.user).then(function (response) {
+        $http.put(`api/users/account`, $scope.user).then(function (response) {
             //in case of success, update the current user info in session storage and redirect to account page
             FacadeService.SetCurrentUser($scope.user);
             $location.path('/MyAccount');
@@ -310,7 +310,7 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
         if (result) {
  
             //get the information related to rpoduct and then the product itself and display it in the form
-            $q.all([FacadeService.PrepareProductInfo(), $http.get(`api/Products/${$routeParams.ProductId}`)]).then(function (response) {
+            $q.all([FacadeService.PrepareProductInfo(), $http.get(`api/products/${$routeParams.ProductId}`)]).then(function (response) {
                 $scope.productInfo = response[0];
                 $scope.product = response[1].data;
                 //if user is logged in, but is trying to modify not his own product, edit form is not displayed
@@ -330,7 +330,7 @@ app.controller('EditProductController', ['$scope', '$http', '$routeParams', '$lo
     $scope.onChange = FacadeService.OnSelectChange;
     //function for editing product
     $scope.Save = function () {
-        $http.put(`api/Products/${$routeParams.ProductId}`, $scope.product).then(function (response) {
+        $http.put(`api/products/${$routeParams.ProductId}`, $scope.product).then(function (response) {
             //in case of success redirect to the page with products of the user
             $location.path('/MyProducts');
         },
@@ -386,7 +386,7 @@ app.controller('MyProductsController', ['$scope', '$http', 'FacadeService', func
             $scope.IsLogged = true;
             $scope.CurrentUser = FacadeService.GetCurrentUser();
             //get products of the current user
-            $http.get(`api/Products?user=${$scope.CurrentUser.userId}`).then(function (response) {
+            $http.get(`api/products?user=${$scope.CurrentUser.userId}`).then(function (response) {
                 $scope.products = response.data;
                 //display date published in user friendly format
                 $scope.products.forEach(product => {
@@ -405,7 +405,7 @@ app.controller('ProductDetailsController', ['$scope', '$http', '$routeParams', '
     $scope.product = null;
     //message to display error
     $scope.message = "";
-    $http.get(`api/Products/${$routeParams.ProductId}`).then(function (response) {
+    $http.get(`api/products/${$routeParams.ProductId}`).then(function (response) {
         //if product exists, display product info in the view
         $scope.product = response.data;
         //display date published in user friendly way
@@ -432,17 +432,17 @@ app.controller('ProductListController', ['$scope', '$http', '$q','FacadeService'
         category: null
     }
     //getting product related data for filters (excpet subcategories, because they are also filtered as products)
-    $http.get(`api/Manufacturers`).then(function (response) {
+    $http.get(`api/manufacturers`).then(function (response) {
         $scope.data.manufacturers = response.data;
     })
-    $http.get(`api/Categories`).then(function (response) {
+    $http.get(`api/categories`).then(function (response) {
         $scope.data.categories = response.data;
     })
 
     //getting subcategories filtered by category
     //when user filters products by category, subcategories are getting filtered by that category as well
     $scope.GetSubcategories = function () {
-        $http.get(`api/Subcategories?${$scope.filterParams.category == null ? '' : `&category=${$scope.filterParams.category}`}`).then(function (response) {
+        $http.get(`api/subcategories?${$scope.filterParams.category == null ? '' : `&category=${$scope.filterParams.category}`}`).then(function (response) {
             $scope.data.subcategories = response.data;
         })
     }
@@ -461,7 +461,7 @@ app.controller('ProductListController', ['$scope', '$http', '$q','FacadeService'
     //getting filtered products
     $scope.GetProducts = function () {
         var queryString = $scope.BuildQueryString();
-        $http.get(`api/Products?${queryString}`).then(function (response) {
+        $http.get(`api/products?${queryString}`).then(function (response) {
             $scope.data.products = response.data;
             $scope.data.products.forEach(function (product) {
                 product.datePublished = FacadeService.ConvertDate(product.datePublished);
@@ -514,7 +514,7 @@ app.controller('RegisterController', ['$scope', '$http', '$location', 'FacadeSer
     })
     //function to register user
     $scope.Save = function () {
-        $http.post("api/Users", $scope.user).then(function (response) {
+        $http.post("api/users", $scope.user).then(function (response) {
             //in case of success, automatically sign in
             $scope.login = {
                 userName: $scope.user.userName,
@@ -553,13 +553,13 @@ app.controller('UserDetailsController', ['$scope', '$http', '$routeParams', 'Fac
     $scope.products = [];
     //message to display error
     $scope.message = "";
-    $http.get(`api/Users/${$routeParams.UserId}`).then(function (response) {
+    $http.get(`api/users/${$routeParams.UserId}`).then(function (response) {
         //in case of success display user info in the view
         $scope.user = response.data;
         //display date of birth in user friendly way
         $scope.user.dateOfBirth = FacadeService.ConvertDate($scope.user.dateOfBirth);
         //get products of the user
-        $http.get(`api/Products?user=${$scope.user.userId}`).then(function (response) {
+        $http.get(`api/products?user=${$scope.user.userId}`).then(function (response) {
             //display products in the view 
             $scope.products = response.data;
             //display date published in user friendly way
@@ -576,7 +576,7 @@ app.controller('UserDetailsController', ['$scope', '$http', '$routeParams', 'Fac
 //controller for displaying list of users
 app.controller('UsersController', ['$scope', '$http', 'FacadeService', function ($scope, $http, FacadeService) {
     $scope.users = [];
-    $http.get("api/Users").then(function (response) {
+    $http.get("api/users").then(function (response) {
         //get the users and display them in the view
         $scope.users = response.data;
         //display date of birth in user friendly way

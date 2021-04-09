@@ -19,9 +19,9 @@ namespace WAD._8392.WebApp.Controllers
         //controller for handling manufacturers
         //note: methods of adding/updating/deleting manufacturers are not included in the client application,
         //since it would not make sense if any user registered in the system would be able to change this information
-        //logic for these methods is not fully implemented in this controller as well
-        //proper logic would be to allow admins to do that, but it was decided not to include this functionality in the application for now,
-        //maybe in the future it will be added
+        //proper logic would be to allow admins to do that, that is why, role admin was put in authorize filter,
+        //but it was decided not to develop role based authentication in the application for now,
+        //maybe in the future it will be added 
         //that is why, database was already populated with sufficient number of manufacturers
         public ManufacturersController(IRepository<Manufacturer> repository):base(repository)
         {
@@ -50,7 +50,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // PUT: api/Manufacturers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutManufacturer(int id, Manufacturer manufacturer)
         {
@@ -83,7 +83,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // POST: api/Manufacturers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<ActionResult<Manufacturer>> PostManufacturer(Manufacturer manufacturer)
         {
@@ -97,7 +97,7 @@ namespace WAD._8392.WebApp.Controllers
         }
 
         // DELETE: api/Manufacturers/5
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteManufacturer(int id)
         {

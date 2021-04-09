@@ -37,7 +37,7 @@ namespace WAD._8392.WebApp.Controllers
             var dtoUsers = users.Select(user => _converter.ConvertToDTO(user)).ToList();
             return Ok(dtoUsers);
         }
-
+        //api/users/id - URI for a user
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
@@ -51,9 +51,9 @@ namespace WAD._8392.WebApp.Controllers
             //get used details without password information (DTO is used)
             return Ok(_converter.ConvertToDTO(user));
         }
-
+        //api/users/account - URI for account
         [Authorize]
-        [HttpGet("Account")]
+        [HttpGet("account")]
         public async Task<ActionResult<User>> GetLoggedUser()
         {
             //getting information about authenticated user (this info can be accessed only by signed in user)
@@ -72,7 +72,7 @@ namespace WAD._8392.WebApp.Controllers
  
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPut]
+        [HttpPut("account")]
         //in this method, id is not passed through url, instead it is taken from JWT token signature (name identifier)
         //since only logged in user can modify his own account
         //JWT token is passed in request header
@@ -159,7 +159,7 @@ namespace WAD._8392.WebApp.Controllers
 
         // DELETE: api/Users/5
         [Authorize]
-        [HttpDelete]
+        [HttpDelete("account")]
         //in this method, id is not passed through url, instead it is taken from JWT token signature (name identifier)
         //since only logged in user can delete his own account
         //JWT token is passed in request header

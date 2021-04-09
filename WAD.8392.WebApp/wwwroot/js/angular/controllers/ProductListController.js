@@ -14,17 +14,17 @@ app.controller('ProductListController', ['$scope', '$http', '$q','FacadeService'
         category: null
     }
     //getting product related data for filters (excpet subcategories, because they are also filtered as products)
-    $http.get(`api/Manufacturers`).then(function (response) {
+    $http.get(`api/manufacturers`).then(function (response) {
         $scope.data.manufacturers = response.data;
     })
-    $http.get(`api/Categories`).then(function (response) {
+    $http.get(`api/categories`).then(function (response) {
         $scope.data.categories = response.data;
     })
 
     //getting subcategories filtered by category
     //when user filters products by category, subcategories are getting filtered by that category as well
     $scope.GetSubcategories = function () {
-        $http.get(`api/Subcategories?${$scope.filterParams.category == null ? '' : `&category=${$scope.filterParams.category}`}`).then(function (response) {
+        $http.get(`api/subcategories?${$scope.filterParams.category == null ? '' : `&category=${$scope.filterParams.category}`}`).then(function (response) {
             $scope.data.subcategories = response.data;
         })
     }
@@ -43,7 +43,7 @@ app.controller('ProductListController', ['$scope', '$http', '$q','FacadeService'
     //getting filtered products
     $scope.GetProducts = function () {
         var queryString = $scope.BuildQueryString();
-        $http.get(`api/Products?${queryString}`).then(function (response) {
+        $http.get(`api/products?${queryString}`).then(function (response) {
             $scope.data.products = response.data;
             $scope.data.products.forEach(function (product) {
                 product.datePublished = FacadeService.ConvertDate(product.datePublished);

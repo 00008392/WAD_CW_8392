@@ -11,7 +11,7 @@ app.controller('MyProductsController', ['$scope', '$http', 'FacadeService', func
             $scope.IsLogged = true;
             $scope.CurrentUser = FacadeService.GetCurrentUser();
             //get products of the current user
-            $http.get(`api/Products?user=${$scope.CurrentUser.userId}`).then(function (response) {
+            $http.get(`api/products?user=${$scope.CurrentUser.userId}`).then(function (response) {
                 $scope.products = response.data;
                 //display date published in user friendly format
                 $scope.products.forEach(product => {
