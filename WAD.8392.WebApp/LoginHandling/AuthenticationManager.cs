@@ -25,14 +25,11 @@ namespace WAD._8392.WebApp.LoginHandling
         //method for creating web token
         public async Task<string> Authenticate(string username, string password)
         {
-            List<User> users = await _repository.GetAllAsync();
-            //check user credentials
-            if (!users.Any(u => u.UserName == username && u.Password == password))
+            var user = await CheckCredentials(username, password);
+            if(user==null)
             {
                 return null;
             }
-            //if exists, find user
-            var user = users.FirstOrDefault(u => u.UserName == username && u.Password == password);
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = AuthOptions.TokenKey();
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -52,6 +49,18 @@ namespace WAD._8392.WebApp.LoginHandling
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+        private async Task<User> CheckCredentials(string username, string password)
+        {
+            List<User> users = await _repository.GetAllAsync();
+            //check user credentials
+            if (!users.Any(u => u.UserName == username && u.Password == password))
+            {
+                return null;
+            }
+            //if exists, find user
+            var user = users.FirstOrDefault(u => u.UserName == username && u.Password == password);
+            return user;
         }
     }
 }

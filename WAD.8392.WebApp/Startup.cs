@@ -61,7 +61,7 @@ namespace WAD._8392.WebApp
             });
             services.AddControllersWithViews();
             //authentication service for injection in controller
-            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<AuthenticationManagerBase, AuthenticationManager>();
             //DTO converter service for injection in controller
             services.AddScoped<IConverter<User, UserDetails>, UserConverter>();
             //repositories for injection in controller
